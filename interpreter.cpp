@@ -4,21 +4,22 @@
 */
 
 /*!
- \mainpage Flex and Bison: example 2
+ \mainpage Flex and Bison: example 7
  \author   
  \date     2018 - 4 - 26
  \version  1.0
  \note Novelties
-    + The program name is displayed in the error messages
-    + Use of the interpreter
-     - interactive: ./interpreter.exe  
-      \n The program ends by pressing Control + D
-      \n or typing # at the beginning of line
-     - Loading an input file: ./interpreter.exe test.txt 
-       \n The program ends when reading the end-of-file character
+   + Numeric variables are allowed
+      - A variable is an identifier that begins with a letter and can be followed by letters or digits.
+   + The identifiers are stored in a table of symbols
+  + Assigments and use of the variables
+    \n a = 2;
+    \n data = 3 * a;
+    \n data * a; 
+   + Multiple assignments in the same sentence
+    \n a = b = c = 2;
 */
 
-// New in example 2
 #include <stdio.h>
 #include <string>
 //
@@ -27,10 +28,34 @@
 
 int lineNumber = 1; //!< Line counter
 
-// New in example 2
 extern FILE * yyin; //!< Standard input device for yylex() 
 std::string progname; //!<  Program name
 //
+
+
+//////////////////////////////////////////////
+
+// Use for recovery of runtime errors 
+#include <setjmp.h>
+#include <signal.h>
+
+// Error recovery functions 
+#include "./error/error.hpp"
+
+/*
+ jhmp_buf
+    This is an array type capable of storing the information of a calling environment to be restored later.
+   This information is filled by calling macro setjmp and can be restored by calling function longjmp.
+*/
+extern jmp_buf begin; //!<  It enables recovery of runtime errors 
+
+//////////////////////////////////////////////
+
+#include "./table/table.hpp"
+
+lp::Table table; //!< Table of Symbols
+
+//////////////////////////////////////////////
 
 //! \name Main program
 
@@ -42,14 +67,13 @@ std::string progname; //!<  Program name
 	\note   C++ requires that main returns an int value
 	\sa     yyparse, yylex
 */
-int main(int argc, char *argv[]) /* MODIFIED in example 2 */
+int main(int argc, char *argv[])
 {
 	/* Option -t needed to debug */
     /* 1, on; 0, off */
 	yydebug = 0; 
- 
+
 	/*****************************************/
-	/* NEW in example 2 */
 	/* 
 		If the input file exists 
 	      then 
@@ -64,10 +88,19 @@ int main(int argc, char *argv[]) /* MODIFIED in example 2 */
 	progname = argv[0];
 	/*****************************************/
 
+	/*********************************************************/
+	/* Sets a viable state to continue after a runtime error */
+	setjmp(begin);
+
+	/* The name of the function to handle floating-point errors is set */
+	signal(SIGFPE,fpecatch);
+	/*********************************************************/
+
 	/* Parser function */
 	yyparse();
 
 	/* End of program */
 	return 0;
 }
+
 

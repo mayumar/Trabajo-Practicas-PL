@@ -21,7 +21,20 @@
 #include "../error/error.hpp"
 /********************/
 
+
+/*********************************************/
+/* Table of symbols */
+#include "../table/table.hpp"
+
+#include "../table/numericVariable.hpp"
+
+extern lp::Table table; //!< External Table of Symbols
+/*********************************************/
+
 extern int lineNumber; //!< External line counter
+
+/* uso de strdup */
+#include <string.h>
 
 %}
 
@@ -44,22 +57,46 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 \n { 
 	/* Line counter */
 	lineNumber++;
-}
+	}
 
 ";"	{ return SEMICOLON; }
 
 {NUMBER}  {
-	/* Conversion of type and sending of the numerical value to the parser */
-	yylval.number = atof(yytext); 
-	return NUMBER; 
-}
+			/* Conversion of type and sending of the numerical value to the parser */
+			yylval.number = atof(yytext); 
+			return NUMBER; 
+		  }
+
+{IDENTIFIER}	{
+					std::string identifier(yytext);
+
+				/* 
+					strdup() function returns a pointer to a new string 
+					which  is a duplicate of the string yytext
+				*/
+					yylval.string =  strdup(yytext);
+
+				/* If the identifier is not in the table of symbols then it is inserted */	
+					if (table.lookupSymbol(identifier) == false)
+					{
+						// The identifier is inserted into the symbol table 
+						// as undefined Variable
+						lp::Variable *var = new lp::Variable(identifier,VARIABLE,UNDEFINED);
+
+						// A pointer to the new NumericVariable is inserted into the table of symbols
+						table.installSymbol(var);
+					}
+
+				/* The identifier is returned as VARIABLE */
+				return VARIABLE;
+				}
 
 
 "#o"    { /* return OR; */ }
 "#y"    { /* return AND; */ }
 "#no"   { /* return NOT; */ }
 
-":="    { /* return ASSIGNMENT; */ }
+":="    { return ASSIGNMENT; }
 
 "-"     { return MINUS;  } 	
 "+"	    { return PLUS;   } 	
@@ -81,7 +118,6 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 "("		{ return LPAREN; }
 ")"		{ return RPAREN; }
 
-{IDENTIFIER} { return IDENTIFIER; }
 
 <<EOF>> { /* The interpreter finishes when finds the end of file character */
 		 // PLACE(24,10);

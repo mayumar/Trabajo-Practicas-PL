@@ -9,6 +9,7 @@
 #include <string>
 
 /*******************************************/
+/* pow */
 #include <math.h>
 /*******************************************/
 
@@ -24,6 +25,14 @@
 /* Macros for the screen */
 #include "../includes/macros.hpp"
 
+/*******************************************/
+/* Table of symbol */
+#include "../table/table.hpp"
+
+#include "../table/numericVariable.hpp"
+/*******************************************/
+
+
 /*! 
 	\brief  Lexical or scanner function
 	\return int
@@ -34,6 +43,7 @@ int yylex();
 
 
 extern int lineNumber; //!< External line counter
+
 
 /***********************************************************/
 extern std::string progname; //!<  Program name
@@ -49,6 +59,9 @@ jmp_buf begin; //!<  It enables recovery of runtime errors
 /*******************************************/
 
 #define ERROR_BOUND 1.0e-6  //!< To compare real numbers
+
+/*******************************************/
+extern lp::Table table; //!< Externa Table of Symbols
 
 
 %}
@@ -70,10 +83,13 @@ jmp_buf begin; //!<  It enables recovery of runtime errors
 %union
 {
   double number;  
+  char * string;
 }
 
 /* Data type of the non-terminal symbol "exp" */
 %type <number> exp
+
+%token <string> VARIABLE UNDEFINED
 /*******************************************/
 
 /* Defined token */
@@ -83,6 +99,8 @@ jmp_buf begin; //!<  It enables recovery of runtime errors
 /*******************************************/
 %token SEMICOLON
 /*******************************************/
+
+%right ASSIGNMENT
 
 /*******************************************/
 %token <number> NUMBER
@@ -100,7 +118,6 @@ jmp_buf begin; //!<  It enables recovery of runtime errors
 %nonassoc  UNARY
 
 /* Maximum precedence  */
-/* NEW in example 5 */
 %right POWER
 /*******************************************/
 
@@ -179,6 +196,50 @@ exp: 	NUMBER
 	
 	|	exp POWER exp 
      	{ $$ = pow($1,$3); }
+
+	|  VARIABLE ASSIGNMENT exp 
+		{   
+			/* Get the identifier in the table of symbols as Variable */
+			lp::Variable *var = (lp::Variable *) table.getSymbol($1);
+
+			// Check if the type of the variable is NUMBER
+			if (var->getType() == NUMBER)
+			{
+				/* Get the identifier in the table of symbols as NumericVariable */
+				lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol($1);
+						
+				/* Assignment the value of expression to the identifier */
+				n->setValue($3);
+			}
+			// The type of variable $1 is not NUMBER
+			else
+			{
+				// Delete $1 from the table of symbols as Variable
+				table.eraseSymbol($1);
+
+				// Insert $1 in the table of symbols as NumericVariable 
+				// with the type NUMBER and the value $3
+				lp::NumericVariable *n = new lp::NumericVariable($1,VARIABLE,NUMBER,$3);
+
+				table.installSymbol(n);
+			}
+
+			/* Copy the value of the expression to allow multiple assignment: a = b = c = 2; */
+			$$ = $3;
+		}
+
+	| VARIABLE
+		{
+			/* Get the identifier in the table of symbols as NumericVariable */
+			lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol($1);
+
+			// Check if the type of the identifier is NUMBER
+			if (n->getType() == NUMBER)
+				// Copy the value of the identifier
+				$$ = n->getValue();
+			else			 
+				execerror("The variable is UNDEFINED", n->getName());
+		}
 
 ;
  

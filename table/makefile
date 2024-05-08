@@ -1,5 +1,4 @@
 # MAKEFILE for Table of symbols
-# NEW in example 7
 NAME=table
 
 # Compiler
@@ -28,7 +27,8 @@ OBJECTS= $(NAME).o symbol.o variable.o numericVariable.o
 # Main rule
 all: $(OBJECTS)
 
-$(NAME).o: $(NAME).cpp  $(NAME).hpp  tableInterface.hpp  symbol.hpp  symbolInterface.hpp
+$(NAME).o: $(NAME).cpp $(NAME).hpp tableInterface.hpp symbol.hpp \
+	symbolInterface.hpp
 	@echo "Compiling " $<
 	@$(CPP) $(CFLAGS) $<
 
