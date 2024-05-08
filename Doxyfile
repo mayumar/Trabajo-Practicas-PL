@@ -12,7 +12,7 @@ SOURCE_BROWSER         = YES
 
 GENERATE_LATEX         = NO
 
-INPUT = interpreter.cpp parser error includes
+INPUT = interpreter.cpp parser error includes table
 
 # If the value of the INPUT tag contains directories, you can use the
 # FILE_PATTERNS tag to specify one or more wildcard patterns (like *.cpp and

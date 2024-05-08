@@ -21,8 +21,32 @@ void yyerror(std::string errorMessage);
 	\return void
 	\param  errorMessage1: first error message
 	\param  errorMessage2: second error message
-	\sa     yyerror
+	\sa     yyerror, execerror
 */
 void warning(std::string errorMessage1,std::string errorMessage2);
+
+
+/***************************************************************/
+/* NEW in example 6 */
+
+/*! 
+	\brief  Run time error recovery function
+	\return void
+	\param  errorMessage1: first error message
+	\param  errorMessage2: second error message
+	\sa     warning, longjmp
+*/
+void execerror(std::string errorMessage1,std::string errorMessage2);
+
+
+/*! 
+	\brief  Run time error recovery function
+	\return void
+	\param  signum  error type 
+	\sa     warning
+*/
+void fpecatch(int signum);
+
+/***************************************************************/
 
 #endif 

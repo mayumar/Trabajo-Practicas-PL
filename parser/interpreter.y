@@ -8,12 +8,21 @@
 #include <iostream>
 #include <string>
 
+/*******************************************/
+#include <math.h>
+/*******************************************/
+
+/*******************************************/
+/* Use for recovery of runtime errors */
+#include <setjmp.h>
+#include <signal.h>
+/*******************************************/
+
 /* Error recovery functions */
 #include "../error/error.hpp"
 
 /* Macros for the screen */
 #include "../includes/macros.hpp"
-
 
 /*! 
 	\brief  Lexical or scanner function
@@ -27,9 +36,21 @@ int yylex();
 extern int lineNumber; //!< External line counter
 
 /***********************************************************/
-/* NEW in example 2 */
 extern std::string progname; //!<  Program name
 /***********************************************************/
+
+/*******************************************/
+/*
+ jhmp_buf
+    This is an array type capable of storing the information of a calling environment to be restored later.
+   This information is filled by calling macro setjmp and can be restored by calling function longjmp.
+*/
+jmp_buf begin; //!<  It enables recovery of runtime errors 
+/*******************************************/
+
+#define ERROR_BOUND 1.0e-6  //!< To compare real numbers
+
+
 %}
 
 /* In case of a syntactic error, more information is shown */

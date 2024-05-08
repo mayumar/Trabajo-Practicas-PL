@@ -6,11 +6,20 @@
 %{
 #include <iostream>
 
+/*********************/
+/* atof */
+#include <stdlib.h>
+/*********************/
+
 /* Macros for the screen */
 #include "../includes/macros.hpp"
 
 /*  interpreter.tab.h contains the numeric values of the tokens produced by the parser */
 #include "interpreter.tab.h"
+
+/********************/
+#include "../error/error.hpp"
+/********************/
 
 extern int lineNumber; //!< External line counter
 
@@ -22,6 +31,9 @@ DIGIT  [0-9]
 
 NUMBER1 {DIGIT}+\.?
 NUMBER2 {DIGIT}*\.{DIGIT}+
+
+/* STATE  */
+%x ERROR
 
 /*! \name REGULAR EXPRESSIONS  */
 %%
@@ -78,8 +90,34 @@ NUMBER2 {DIGIT}*\.{DIGIT}+
 	  	  return 0;
 	}
 
-.       { 
-			/* Any other character */
-          	return yytext[0];
-		}
+.								{ 	
+									/* Any other character */
+									/* Change to error state */
+									BEGIN(ERROR); 
+
+									/* 
+										The current value of yytext 
+										will be concatenated with the next character
+									*/
+									yymore();  
+								}
+
+<ERROR>[^0-9+\-*/()\^% \t\n\;]	{ 
+								  /* 
+									The current value of yytext 
+									will be concatenated with the next character
+								  */
+									yymore(); 
+								}
+
+<ERROR>(.|\n)                {  
+								/* Rewind one position */
+								yyless(yyleng-1); 
+
+								/* Display the error message */
+								warning("Lexical error", yytext);
+
+								/* Restore the initial state */
+   								BEGIN(INITIAL);
+						}
 %%
