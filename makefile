@@ -23,7 +23,8 @@ OBJECTS-ERROR = error/*.o
 
 
 # Includes
-INCLUDES = ./parser/interpreter.tab.h
+INCLUDES = ./parser/interpreter.tab.h ./error/error.hpp \
+			./table/table.hpp
 
 # Predefined macros 
 #
@@ -33,11 +34,9 @@ INCLUDES = ./parser/interpreter.tab.h
 #
 #######################################################
 
-all: $(NAME).exe
-
-$(NAME).exe :  parser-dir error-dir $(OBJECTS)
+$(NAME).exe :  parser-dir error-dir table-dir $(OBJECTS)
 	@echo "Generating " $@
-	@$(CPP) $(OBJECTS) $(OBJECTS-PARSER) $(OBJECTS-ERROR) $(LFLAGS) -o $@ 
+	@$(CPP) $(OBJECTS) $(OBJECTS-PARSER) $(OBJECTS-ERROR)  $(OBJECTS-TABLE) $(LFLAGS) -o $@
 
 
 # Main program
@@ -57,6 +56,12 @@ error-dir:
 	@echo "Accessing directory error" 
 	@echo
 	@make -C error/ 
+	@echo
+
+table-dir:
+	@echo "Accessing directory table" 
+	@echo
+	@make -C table/ 
 	@echo
 
 
@@ -82,6 +87,8 @@ clean:
 	@make -C parser/ clean 
 	@echo
 	@make -C error/ clean
+	@echo
+	@make -C table/ clean
 	@echo
 
 
