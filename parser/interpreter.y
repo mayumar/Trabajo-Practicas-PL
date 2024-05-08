@@ -65,71 +65,121 @@ jmp_buf begin; //!<  It enables recovery of runtime errors
 /* Initial grammatical symbol */
 %start program 
 
+/*******************************************/
+/* Data type YYSTYPE  */
+%union
+{
+  double number;  
+}
+
+/* Data type of the non-terminal symbol "exp" */
+%type <number> exp
+/*******************************************/
+
 /* Defined token */
-%token NUMBER
+
+/* Minimum precedence */
+
+/*******************************************/
+%token SEMICOLON
+/*******************************************/
+
+/*******************************************/
+%token <number> NUMBER
+/*******************************************/
 
 /* Left associativity */
 
-/* Minimum precedence */
-%left '+' '-'
+/*******************************************/
+%left PLUS MINUS 
 
-/* Maximum precedence */
-%left '*' '/'
+%left MULTIPLICATION DIVISION INT_DIVISION MODULE
+
+%left LPAREN RPAREN
+
+%nonassoc  UNARY
+
+/* Maximum precedence  */
+/* NEW in example 5 */
+%right POWER
+/*******************************************/
 
 %%
 //! \name Grammar rules
 
-program : stmtlist
-		 { 
-			std::cout << "program --> stmtlist" << std::endl;
-		 }
-; 
+program : stmtlist {  }
+;
 
-stmtlist:  /* Empty: epsilon rule */
-			{
-				std::cout << "stmtlist -->  epsilon " << std::endl;
-			}
+		/* MODIFIED in example 5: SEMICOLON */ 
+stmtlist:  /* empty: epsilon rule */
 
-		| stmtlist '\n'  /* Empty line */
-			{
-				std::cout << "stmtlist --> stmtlist '\\n' " << std::endl;
-			}
+		| stmtlist SEMICOLON     /* empty line */
 
-        | stmtlist exp '\n'
+		/* MODIFIED in example 4: the result of the expression is displayed  */ 
+        | stmtlist exp SEMICOLON
             { 
-				std::cout << "stmtlist --> stmtlist exp '\\n' " << std::endl;
-
 				std::cout << BIYELLOW; 
-				std::cout << "Correct expression " << std::endl << std::endl;
+				std::cout << "Result: ";
 				std::cout << RESET; 
+				std::cout << $2 << std::endl << std::endl;
             }
 
-        | stmtlist error '\n' 
+        | stmtlist error SEMICOLON
 			{
 				// The function yyerror is called
 				// If %error-verbose is used then an error message is displayed
-
-				std::cout << "stmtlist --> stmtlist error  '\\n' " << std::endl;
 			}
 ;
 
-exp:	NUMBER 
-       { std::cout << "exp --> NUMBER" << std::endl;}
+exp: 	NUMBER
+		{ $$ = $1; }
 
-	|	exp '+' exp 
-		{ std::cout << "exp --> exp '+' exp" << std::endl;}
+	|	exp PLUS exp
+		{ $$ = $1 + $3; }
 
-	|	exp '-' exp
-		{ std::cout << "exp --> exp '-' exp" << std::endl;}
+	|	PLUS exp %prec UNARY
+		{ $$ = +$2; }
 
-	|	exp '*' exp 
-		{ std::cout << "exp --> exp '*' exp" << std::endl;}
+	|	exp MINUS exp
+		{ $$ = $1 - $3; }
 
-	|	exp '/' exp 
-		{ std::cout << "exp --> exp '/' exp" << std::endl;}
+	|	MINUS exp %prec UNARY
+		{ $$ = -$2; }
 
-	|	'(' exp ')'
-		{ std::cout << "exp --> '(' exp ')' " << std::endl;}
+	|	exp MULTIPLICATION exp
+		{ $$ = $1 * $3; }
+
+	|	exp DIVISION exp
+		{   
+			if (fabs($3) < ERROR_BOUND) 
+  				execerror("Runtime error in division", "Division by zero");
+			else 
+    	        $$ = $1 / $3;
+		}
+
+	|	exp INT_DIVISION exp
+		{
+			if(fabs($3) < ERROR_BOUND)
+				execerror("Runtime error in division", "Division by zero");
+			else
+				$$ = (int) $1 / (int) $3;
+			
+		}
+
+	|	LPAREN exp RPAREN
+		{ $$ = $2; }
+
+	|	exp MODULE exp 
+		{
+			if (fabs($3) < ERROR_BOUND)  
+				execerror("Runtime error in modulo", "Division by zero");
+			else 
+				$$ = (int) $1 % (int) $3;
+       }
+	
+	|	exp POWER exp 
+     	{ $$ = pow($1,$3); }
+
 ;
  
 %%

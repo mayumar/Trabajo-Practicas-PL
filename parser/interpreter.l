@@ -37,11 +37,27 @@ NUMBER {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
 /*! \name REGULAR EXPRESSIONS  */
 %%
 
-"#o"    { return OR; }
-"#y"    { return AND; }
-"#no"   { return NOT; }
+[ \t] 	{ ; }    /* skip white space and tabulator */
 
-":="    { return ASSIGNMENT; }
+\n { 
+	/* Line counter */
+	lineNumber++;
+}
+
+";"	{ return SEMICOLON; }
+
+{NUMBER}  {
+	/* Conversion of type and sending of the numerical value to the parser */
+	yylval.number = atof(yytext); 
+	return NUMBER; 
+}
+
+
+"#o"    { /* return OR; */ }
+"#y"    { /* return AND; */ }
+"#no"   { /* return NOT; */ }
+
+":="    { /* return ASSIGNMENT; */ }
 
 "-"     { return MINUS;  } 	
 "+"	    { return PLUS;   } 	
@@ -51,26 +67,18 @@ NUMBER {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
 "%"     { return MODULE; }
 "**"    { return POWER; }
  
-"||"    { return CONCAT; }
+"||"    { /* return CONCAT; */ }
 
-"<"		{ return LESS_THAN; }
-"<="	{ return LESS_OR_EQUAL; }
-">"		{ return GREATER_THAN; }
-">="	{ return GREATER_OR_EQUAL; }
-"="	    { return EQUAL; }
-"<>"	{ return NOT_EQUAL; }
+"<"		{ /* return LESS_THAN; */ }
+"<="	{ /* return LESS_OR_EQUAL; */ }
+">"		{ /* return GREATER_THAN; */ }
+">="	{ /* return GREATER_OR_EQUAL; */ }
+"="	    { /* return EQUAL; */ }
+"<>"	{ /* return NOT_EQUAL; */ }
 
-[ \t] 	{ ; }    /* skip white space and tabulator */
+"("		{ return LPAREN; }
+")"		{ return RPAREN; }
 
-\n { 
-	/* Line counter */
-	lineNumber++; 
-	return '\n';
-}
-
-{NUMBER}  {
-	return NUMBER; 
-}
 
 <<EOF>> { /* The interpreter finishes when finds the end of file character */
 		 // PLACE(24,10);
