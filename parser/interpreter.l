@@ -26,6 +26,35 @@ NUMBER2 {DIGIT}*\.{DIGIT}+
 /*! \name REGULAR EXPRESSIONS  */
 %%
 
+"#o"    { return OR; }
+"#y"    { return AND; }
+"#no"   { return NOT; }
+
+":="    { return ASSIGNMENT; }
+
+"-"     { return MINUS;  } 	
+"+"	    { return PLUS;   } 	
+"*"	    { return MULTIPLICATION; }
+"/"     { return DIVISION; } 
+"//"    { return INT_DIVISION; }
+"%"     { return MODULE; }
+"**"    { return POWER; }
+ 
+"||"    { return CONCAT; }
+
+"<"		{ return LESS_THAN; }
+"<="	{ return LESS_OR_EQUAL; }
+">"		{ return GREATER_THAN; }
+">="	{ return GREATER_OR_EQUAL; }
+"="	    { return EQUAL; }
+"<>"	{ return NOT_EQUAL; }
+
+
+
+
+
+
+
 [ \t] 	{ ; }    /* skip white space and tabulator */
 
 \n      { 
