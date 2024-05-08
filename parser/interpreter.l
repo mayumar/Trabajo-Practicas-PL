@@ -20,8 +20,7 @@ extern int lineNumber; //!< External line counter
 
 DIGIT  [0-9]
 
-NUMBER1 {DIGIT}+\.?
-NUMBER2 {DIGIT}*\.{DIGIT}+
+NUMBER {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
 
 /*! \name REGULAR EXPRESSIONS  */
 %%
@@ -49,23 +48,17 @@ NUMBER2 {DIGIT}*\.{DIGIT}+
 "="	    { return EQUAL; }
 "<>"	{ return NOT_EQUAL; }
 
-
-
-
-
-
-
 [ \t] 	{ ; }    /* skip white space and tabulator */
 
-\n      { 
-			/* Line counter */
-			lineNumber++; 
-			return '\n';
-		}
+\n { 
+	/* Line counter */
+	lineNumber++; 
+	return '\n';
+}
 
-{NUMBER1}|{NUMBER2}  {
-                       return NUMBER; 
-                      }
+{NUMBER}  {
+	return NUMBER; 
+}
 
 <<EOF>> { /* The interpreter finishes when finds the end of file character */
 		 // PLACE(24,10);
