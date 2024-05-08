@@ -36,7 +36,7 @@ void init(lp::Table &t)
 		// The  Predefined numeric constant is inserted into the symbol table
 
 		 n = new lp::NumericConstant(numericConstant[i].name,
-									 CONSTANT,
+									// TODO: CONSTANT, 
 									 NUMBER,
 									 numericConstant[i].value);
 

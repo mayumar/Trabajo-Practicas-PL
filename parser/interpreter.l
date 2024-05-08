@@ -47,7 +47,7 @@ NUMBER {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
 IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 
 /* STATE  */
-%x ERROR
+%x ERROR Q1
 
 /*! \name REGULAR EXPRESSIONS  */
 %%
@@ -91,6 +91,26 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 				return VARIABLE;
 				}
 
+!!.* { /* return COMMENT; */ }
+
+"<<" {
+	/* yymore(); */
+    BEGIN(Q1);
+}
+
+<Q1>[^">>"] {
+	/* yymore(); */
+}
+
+<Q1>">"|"<" {
+    /* yymore(); */
+}
+
+<Q1>">>" {
+	/* yymore(); */
+	BEGIN(INITIAL);
+	/* return COMMENT; */
+}
 
 "#o"    { /* return OR; */ }
 "#y"    { /* return AND; */ }
