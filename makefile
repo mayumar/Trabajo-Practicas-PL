@@ -15,17 +15,18 @@ CFLAGS = -c -g  -Wall -ansi -O2
 LFLAGS = -lfl
 #LFLAGS = -ll
 
-
 # Objects
 OBJECTS= $(NAME).o
 OBJECTS-PARSER = parser/*.o
 OBJECTS-ERROR = error/*.o
+OBJECTS-TABLE = table/*.o
 
 
 # Includes
 INCLUDES = ./parser/interpreter.tab.h ./error/error.hpp \
 			./table/table.hpp
 
+#######################################################
 # Predefined macros 
 #
 # $@: name of the target
@@ -37,7 +38,6 @@ INCLUDES = ./parser/interpreter.tab.h ./error/error.hpp \
 $(NAME).exe :  parser-dir error-dir table-dir $(OBJECTS)
 	@echo "Generating " $@
 	@$(CPP) $(OBJECTS) $(OBJECTS-PARSER) $(OBJECTS-ERROR)  $(OBJECTS-TABLE) $(LFLAGS) -o $@
-
 
 # Main program
 $(NAME).o: $(NAME).cpp parser-dir $(INCLUDES)
@@ -64,7 +64,7 @@ table-dir:
 	@make -C table/ 
 	@echo
 
-
+#######################################################
 $(NAME).output: 
 	@echo "Generating: " $@
 	@make -C parser/ $@
@@ -77,7 +77,7 @@ doc: Doxyfile
 	doxygen
 
 #######################################################
-# Auxiliary files and html directory are deleted
+# Auxiliary files and hmtl directory are deleted
 clean: 
 	@echo "Deleting html"
 	@rm -rf html 

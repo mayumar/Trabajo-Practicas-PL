@@ -9,6 +9,7 @@
 #include <string>
 
 /*******************************************/
+/* pow */
 #include <math.h>
 /*******************************************/
 
@@ -24,6 +25,14 @@
 /* Macros for the screen */
 #include "../includes/macros.hpp"
 
+/*******************************************/
+/* Table of symbol */
+#include "../table/table.hpp"
+
+#include "../table/numericVariable.hpp"
+/*******************************************/
+
+
 /*! 
 	\brief  Lexical or scanner function
 	\return int
@@ -34,6 +43,7 @@ int yylex();
 
 
 extern int lineNumber; //!< External line counter
+
 
 /***********************************************************/
 extern std::string progname; //!<  Program name
@@ -50,6 +60,9 @@ jmp_buf begin; //!<  It enables recovery of runtime errors
 
 #define ERROR_BOUND 1.0e-6  //!< To compare real numbers
 
+/*******************************************/
+extern lp::Table table; //!< Externa Table of Symbols
+
 
 %}
 
@@ -65,71 +78,169 @@ jmp_buf begin; //!<  It enables recovery of runtime errors
 /* Initial grammatical symbol */
 %start program 
 
+/*******************************************/
+/* Data type YYSTYPE  */
+%union
+{
+  double number;  
+  char * string;
+}
+
+/* Data type of the non-terminal symbol "exp" */
+%type <number> exp
+
+%token <string> VARIABLE UNDEFINED
+/*******************************************/
+
 /* Defined token */
-%token NUMBER
+
+/* Minimum precedence */
+
+/*******************************************/
+%token SEMICOLON
+/*******************************************/
+
+%right ASSIGNMENT
+
+/*******************************************/
+%token <number> NUMBER
+/*******************************************/
 
 /* Left associativity */
 
-/* Minimum precedence */
-%left '+' '-'
+/*******************************************/
+%left PLUS MINUS 
 
-/* Maximum precedence */
-%left '*' '/'
+%left MULTIPLICATION DIVISION INT_DIVISION MODULE
+
+%left LPAREN RPAREN
+
+%nonassoc  UNARY
+
+/* Maximum precedence  */
+%right POWER
+/*******************************************/
 
 %%
 //! \name Grammar rules
 
-program : stmtlist
-		 { 
-			std::cout << "program --> stmtlist" << std::endl;
-		 }
-; 
+program : stmtlist {  }
+;
 
-stmtlist:  /* Empty: epsilon rule */
-			{
-				std::cout << "stmtlist -->  epsilon " << std::endl;
-			}
+		/* MODIFIED in example 5: SEMICOLON */ 
+stmtlist:  /* empty: epsilon rule */
 
-		| stmtlist '\n'  /* Empty line */
-			{
-				std::cout << "stmtlist --> stmtlist '\\n' " << std::endl;
-			}
+		| stmtlist SEMICOLON     /* empty line */
 
-        | stmtlist exp '\n'
+		/* MODIFIED in example 4: the result of the expression is displayed  */ 
+        | stmtlist exp SEMICOLON
             { 
-				std::cout << "stmtlist --> stmtlist exp '\\n' " << std::endl;
-
 				std::cout << BIYELLOW; 
-				std::cout << "Correct expression " << std::endl << std::endl;
+				std::cout << "Result: ";
 				std::cout << RESET; 
+				std::cout << $2 << std::endl << std::endl;
             }
 
-        | stmtlist error '\n' 
+        | stmtlist error SEMICOLON
 			{
 				// The function yyerror is called
 				// If %error-verbose is used then an error message is displayed
-
-				std::cout << "stmtlist --> stmtlist error  '\\n' " << std::endl;
 			}
 ;
 
-exp:	NUMBER 
-       { std::cout << "exp --> NUMBER" << std::endl;}
+exp: 	NUMBER
+		{ $$ = $1; }
 
-	|	exp '+' exp 
-		{ std::cout << "exp --> exp '+' exp" << std::endl;}
+	|	exp PLUS exp
+		{ $$ = $1 + $3; }
 
-	|	exp '-' exp
-		{ std::cout << "exp --> exp '-' exp" << std::endl;}
+	|	PLUS exp %prec UNARY
+		{ $$ = +$2; }
 
-	|	exp '*' exp 
-		{ std::cout << "exp --> exp '*' exp" << std::endl;}
+	|	exp MINUS exp
+		{ $$ = $1 - $3; }
 
-	|	exp '/' exp 
-		{ std::cout << "exp --> exp '/' exp" << std::endl;}
+	|	MINUS exp %prec UNARY
+		{ $$ = -$2; }
 
-	|	'(' exp ')'
-		{ std::cout << "exp --> '(' exp ')' " << std::endl;}
+	|	exp MULTIPLICATION exp
+		{ $$ = $1 * $3; }
+
+	|	exp DIVISION exp
+		{   
+			if (fabs($3) < ERROR_BOUND) 
+  				execerror("Runtime error in division", "Division by zero");
+			else 
+    	        $$ = $1 / $3;
+		}
+
+	|	exp INT_DIVISION exp
+		{
+			if(fabs($3) < ERROR_BOUND)
+				execerror("Runtime error in division", "Division by zero");
+			else
+				$$ = (int) $1 / (int) $3;
+			
+		}
+
+	|	LPAREN exp RPAREN
+		{ $$ = $2; }
+
+	|	exp MODULE exp 
+		{
+			if (fabs($3) < ERROR_BOUND)  
+				execerror("Runtime error in modulo", "Division by zero");
+			else 
+				$$ = (int) $1 % (int) $3;
+       }
+	
+	|	exp POWER exp 
+     	{ $$ = pow($1,$3); }
+
+	|  VARIABLE ASSIGNMENT exp 
+		{   
+			/* Get the identifier in the table of symbols as Variable */
+			lp::Variable *var = (lp::Variable *) table.getSymbol($1);
+
+			// Check if the type of the variable is NUMBER
+			if (var->getType() == NUMBER)
+			{
+				/* Get the identifier in the table of symbols as NumericVariable */
+				lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol($1);
+						
+				/* Assignment the value of expression to the identifier */
+				n->setValue($3);
+			}
+			// The type of variable $1 is not NUMBER
+			else
+			{
+				// Delete $1 from the table of symbols as Variable
+				table.eraseSymbol($1);
+
+				// Insert $1 in the table of symbols as NumericVariable 
+				// with the type NUMBER and the value $3
+				lp::NumericVariable *n = new lp::NumericVariable($1,VARIABLE,NUMBER,$3);
+
+				table.installSymbol(n);
+			}
+
+			/* Copy the value of the expression to allow multiple assignment: a = b = c = 2; */
+			$$ = $3;
+		}
+
+	| VARIABLE
+		{
+			/* Get the identifier in the table of symbols as NumericVariable */
+			lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol($1);
+
+			// Check if the type of the identifier is NUMBER
+			if (n->getType() == NUMBER)
+				// Copy the value of the identifier
+				$$ = n->getValue();
+			else			 
+				execerror("The variable is UNDEFINED", n->getName());
+		}
+
 ;
  
 %%
