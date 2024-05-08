@@ -19,12 +19,15 @@ LFLAGS = -lfl
 OBJECTS= $(NAME).o
 OBJECTS-PARSER = parser/*.o
 OBJECTS-ERROR = error/*.o
-OBJECTS-TABLE = table/*.o
-
+OBJECTS-TABLE = table/*.o  #New in example 7
 
 # Includes
+# MODIFIED in example 7: ./table/table.hpp
+# MODIFIED in example 10: ./table/init.hpp
 INCLUDES = ./parser/interpreter.tab.h ./error/error.hpp \
-			./table/table.hpp
+			./table/table.hpp \
+			./table/init.hpp
+
 
 #######################################################
 # Predefined macros 
@@ -35,9 +38,11 @@ INCLUDES = ./parser/interpreter.tab.h ./error/error.hpp \
 #
 #######################################################
 
+#Modified in example 7
 $(NAME).exe :  parser-dir error-dir table-dir $(OBJECTS)
 	@echo "Generating " $@
 	@$(CPP) $(OBJECTS) $(OBJECTS-PARSER) $(OBJECTS-ERROR)  $(OBJECTS-TABLE) $(LFLAGS) -o $@
+
 
 # Main program
 $(NAME).o: $(NAME).cpp parser-dir $(INCLUDES)
@@ -58,6 +63,7 @@ error-dir:
 	@make -C error/ 
 	@echo
 
+# New in example 7
 table-dir:
 	@echo "Accessing directory table" 
 	@echo
@@ -78,6 +84,7 @@ doc: Doxyfile
 
 #######################################################
 # Auxiliary files and hmtl directory are deleted
+# Modified in example 7
 clean: 
 	@echo "Deleting html"
 	@rm -rf html 
@@ -90,6 +97,5 @@ clean:
 	@echo
 	@make -C table/ clean
 	@echo
-
 
 

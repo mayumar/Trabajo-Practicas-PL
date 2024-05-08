@@ -4,22 +4,15 @@
 */
 
 /*!
- \mainpage Flex and Bison: example 7
+ \mainpage Flex and Bison: example 12
  \author   
  \date     2018 - 4 - 26
  \version  1.0
  \note Novelties
-   + Numeric variables are allowed
-      - A variable is an identifier that begins with a letter and can be followed by letters or digits.
-   + The identifiers are stored in a table of symbols
-  + Assigments and use of the variables
-    \n a = 2;
-    \n data = 3 * a;
-    \n data * a; 
-   + Multiple assignments in the same sentence
-    \n a = b = c = 2;
+	+ Pre-installed keywords in the table of symbols
 */
 
+// New in example 2
 #include <stdio.h>
 #include <string>
 //
@@ -28,19 +21,21 @@
 
 int lineNumber = 1; //!< Line counter
 
+// New in example 2
 extern FILE * yyin; //!< Standard input device for yylex() 
 std::string progname; //!<  Program name
 //
 
 
 //////////////////////////////////////////////
+// NEW in example 6 
 
 // Use for recovery of runtime errors 
 #include <setjmp.h>
 #include <signal.h>
 
 // Error recovery functions 
-#include "./error/error.hpp"
+#include "error/error.hpp"
 
 /*
  jhmp_buf
@@ -50,12 +45,20 @@ std::string progname; //!<  Program name
 extern jmp_buf begin; //!<  It enables recovery of runtime errors 
 
 //////////////////////////////////////////////
+// NEW in example 7 
 
-#include "./table/table.hpp"
+#include "table/table.hpp"
 
 lp::Table table; //!< Table of Symbols
 
 //////////////////////////////////////////////
+// NEW in example 10 
+
+#include "table/init.hpp"
+
+// cout.precision
+#include <iostream>
+//////////////////////////////////////////////////
 
 //! \name Main program
 
@@ -72,8 +75,9 @@ int main(int argc, char *argv[])
 	/* Option -t needed to debug */
     /* 1, on; 0, off */
 	yydebug = 0; 
-
+ 
 	/*****************************************/
+	/* NEW in example 2 */
 	/* 
 		If the input file exists 
 	      then 
@@ -88,7 +92,20 @@ int main(int argc, char *argv[])
 	progname = argv[0];
 	/*****************************************/
 
+	/*****************************************/
+	/* NEW in example 10 */ 
+	/* Number of decimal places */ 
+	std::cout.precision(7);
+
+	/* 
+	  Table of symbol initialization 
+	  Must be written before the recovery sentence: setjmp
+	*/
+	init(table);
+	/*****************************************/
+
 	/*********************************************************/
+	/* NEW in example 6 */ 
 	/* Sets a viable state to continue after a runtime error */
 	setjmp(begin);
 
@@ -102,5 +119,4 @@ int main(int argc, char *argv[])
 	/* End of program */
 	return 0;
 }
-
 
