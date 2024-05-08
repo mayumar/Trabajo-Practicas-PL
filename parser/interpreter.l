@@ -19,8 +19,10 @@ extern int lineNumber; //!< External line counter
 /*! \name REGULAR DEFINITIONS  */
 
 DIGIT  [0-9]
+CHAR   [a-zA-Z]
 
 NUMBER {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
+IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 
 /*! \name REGULAR EXPRESSIONS  */
 %%
@@ -56,9 +58,8 @@ NUMBER {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
 	return '\n';
 }
 
-{NUMBER}  {
-	return NUMBER; 
-}
+{NUMBER}     { return NUMBER; }
+{IDENTIFIER} { return IDENTIFIER; }
 
 <<EOF>> { /* The interpreter finishes when finds the end of file character */
 		 // PLACE(24,10);
