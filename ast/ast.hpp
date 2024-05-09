@@ -1617,8 +1617,8 @@ class IfStmt : public Statement
 {
  private:
   ExpNode *_cond;    //!< Condicion of the if statement
-  std::list<Statement *> *_stmts1; //!< Statement of the consequent
-  std::list<Statement *> *_stmts2; //!< Statement of the alternative
+  std::list<Statement *> *_stmts1; //!< Statements of the consequent
+  std::list<Statement *> *_stmts2; //!< Statements of the alternative
 
   public:
 /*!		
