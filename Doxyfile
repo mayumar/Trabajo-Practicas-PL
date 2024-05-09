@@ -1,5 +1,4 @@
 # Doxyfile 1.8.11
-
 PROJECT_NAME           = "Language Processors"
 
 OUTPUT_LANGUAGE        = English
@@ -12,7 +11,8 @@ SOURCE_BROWSER         = YES
 
 GENERATE_LATEX         = NO
 
-INPUT = interpreter.cpp parser error includes table
+#Modified in examples 7, 16
+INPUT = interpreter.cpp parser error includes table ast
 
 # If the value of the INPUT tag contains directories, you can use the
 # FILE_PATTERNS tag to specify one or more wildcard patterns (like *.cpp and
@@ -76,4 +76,5 @@ UML_LOOK            = NO
 # The default value is: YES.
 
 HAVE_DOT			= YES
+
 

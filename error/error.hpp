@@ -26,9 +26,6 @@ void yyerror(std::string errorMessage);
 void warning(std::string errorMessage1,std::string errorMessage2);
 
 
-/***************************************************************/
-/* NEW in example 6 */
-
 /*! 
 	\brief  Run time error recovery function
 	\return void
@@ -42,11 +39,21 @@ void execerror(std::string errorMessage1,std::string errorMessage2);
 /*! 
 	\brief  Run time error recovery function
 	\return void
-	\param  signum  error type 
+	\param  p 
 	\sa     warning
 */
-void fpecatch(int signum);
+void fpecatch(int p);
 
-/***************************************************************/
+// NEW in example 13
+
+/*! 
+	\brief  Control EDOM or ERANGE errors
+	\param  d: double
+	\param  s: 
+	\return If an EDOM or ERANGE error has occurred, an error message is displayed; otherwise it returns the value "d"
+	\sa     execerror
+*/
+double errcheck(double d, std::string s);
+
 
 #endif 

@@ -1,11 +1,18 @@
-2
+read(dato);
 
-2 + 3
+print dato;
 
-2 - 3
+if (dato < 0) f := 0 ;
+else
+    {
+     i := dato;
+     f := 1;
 
-2 * 3
+     while(i>1)
+       {
+        f := f * i;
+        i := i - 1;
+      }
+    }
 
-2 / 3
-
-(4 + 5) / (8 - 2)
+print f; 

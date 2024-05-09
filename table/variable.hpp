@@ -32,7 +32,7 @@ class Variable:public lp::Symbol
 \name Protected atribute of Variable class
 */
 	protected:
-		int      	_type;    //!< \brief Type of the  Variable: UNDEFINED, NUMERICVAR, STRINGVAR
+		int      	_type;    //!< \brief Type of the  Variable: UNDEFINED, NUMERICVAR, STRINGVAR, LOGICALVAR
 
 /*!		
 \name Public methods of Variable class

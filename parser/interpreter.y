@@ -9,11 +9,13 @@
 #include <string>
 
 /*******************************************/
+/* NEW in example 5 */
 /* pow */
 #include <math.h>
 /*******************************************/
 
 /*******************************************/
+/* NEW in example 6 */
 /* Use for recovery of runtime errors */
 #include <setjmp.h>
 #include <signal.h>
@@ -25,13 +27,55 @@
 /* Macros for the screen */
 #include "../includes/macros.hpp"
 
+
 /*******************************************/
+/* 
+  NEW in example 16
+  AST class
+  IMPORTANT: this file must be before init.hpp
+*/
+#include "../ast/ast.hpp"
+
+
+/*******************************************/
+/* NEW in example 7 */
 /* Table of symbol */
 #include "../table/table.hpp"
+/*******************************************/
 
+/*******************************************/
 #include "../table/numericVariable.hpp"
 /*******************************************/
 
+/* NEW in example 15 */
+#include "../table/logicalVariable.hpp"
+
+/*******************************************/
+/* NEW in example 11 */
+#include "../table/numericConstant.hpp"
+/*******************************************/
+
+/*******************************************/
+/* NEW in example 15 */
+#include "../table/logicalConstant.hpp"
+/*******************************************/
+
+/*******************************************/
+/* NEW in example 13 */
+#include "../table/builtinParameter1.hpp"
+/*******************************************/
+
+/*******************************************/
+/* NEW in example 14 */
+#include "../table/builtinParameter0.hpp"
+#include "../table/builtinParameter2.hpp"
+/*******************************************/
+
+
+/*******************************************/
+/* NEW in example 10 */
+#include "../table/init.hpp"
+/*******************************************/
 
 /*! 
 	\brief  Lexical or scanner function
@@ -45,11 +89,22 @@ int yylex();
 extern int lineNumber; //!< External line counter
 
 
+/* NEW in example 15 */
+extern bool interactiveMode; //!< Control the interactive mode of execution of the interpreter
+
+/* New in example 17 */
+extern int control; //!< External: to control the interactive mode in "if" and "while" sentences 
+
+
+
+
 /***********************************************************/
+/* NEW in example 2 */
 extern std::string progname; //!<  Program name
 /***********************************************************/
 
 /*******************************************/
+/* NEW in example 6 */
 /*
  jhmp_buf
     This is an array type capable of storing the information of a calling environment to be restored later.
@@ -58,11 +113,14 @@ extern std::string progname; //!<  Program name
 jmp_buf begin; //!<  It enables recovery of runtime errors 
 /*******************************************/
 
-#define ERROR_BOUND 1.0e-6  //!< To compare real numbers
 
 /*******************************************/
-extern lp::Table table; //!< Externa Table of Symbols
+/* NEW in example 7 */
+extern lp::Table table; //!< Extern Table of Symbols
 
+/*******************************************/
+/* NEW in example 16 */
+extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 %}
 
@@ -73,176 +131,514 @@ extern lp::Table table; //!< Externa Table of Symbols
 /* ALTERNATIVA a %error-verbose */
 %define parse.error verbose
 
-//! \name Grammar symbols
 
-/* Initial grammatical symbol */
-%start program 
+/* Initial grammar symbol */
+%start program
 
 /*******************************************/
 /* Data type YYSTYPE  */
-%union
-{
-  double number;  
-  char * string;
+/* NEW in example 4 */
+%union {
+  double number;
+  char * string; 				 /* NEW in example 7 */
+  bool logic;						 /* NEW in example 15 */
+  lp::ExpNode *expNode;  			 /* NEW in example 16 */
+  std::list<lp::ExpNode *>  *parameters;    // New in example 16; NOTE: #include<list> must be in interpreter.l, init.cpp, interpreter.cpp
+  std::list<lp::Statement *> *stmts; /* NEW in example 16 */
+  lp::Statement *st;				 /* NEW in example 16 */
+  lp::AST *prog;					 /* NEW in example 16 */
 }
 
-/* Data type of the non-terminal symbol "exp" */
-%type <number> exp
+/* Type of the non-terminal symbols */
+// New in example 17: cond
+%type <expNode> exp cond 
 
-%token <string> VARIABLE UNDEFINED
-/*******************************************/
+/* New in example 14 */
+%type <parameters> listOfExp  restOfListOfExp
 
-/* Defined token */
+%type <stmts> stmtlist
+
+// New in example 17: if, while, block
+%type <st> stmt asgn print read if while block
+
+%type <prog> program
+
+/* Defined tokens */
 
 /* Minimum precedence */
 
 /*******************************************/
+/* NEW in example 5 */
 %token SEMICOLON
 /*******************************************/
 
+/* NEW in example 17: IF, ELSE, WHILE */
+%token PRINT READ IF ELSE WHILE 
+
+/* NEW in example 17 */
+%token LETFCURLYBRACKET RIGHTCURLYBRACKET
+
+/* NEW in example 7 */
 %right ASSIGNMENT
 
+/* NEW in example 14 */
+%token COMMA
+
 /*******************************************/
+/* MODIFIED in example 4 */
 %token <number> NUMBER
 /*******************************************/
 
+/*******************************************/
+/* NEW in example 15 */
+%token <logic> BOOL
+/*******************************************/
+
+/* MODIFIED in examples 11, 13 */
+%token <string> VARIABLE UNDEFINED CONSTANT BUILTIN
+
 /* Left associativity */
 
-/*******************************************/
+/*******************************************************/
+/* NEW in example 15 */
+%left OR
+
+%left AND
+
+%nonassoc GREATER_OR_EQUAL LESS_OR_EQUAL GREATER_THAN LESS_THAN  EQUAL NOT_EQUAL
+
+%left NOT
+/*******************************************************/
+
+/* MODIFIED in example 3 */
 %left PLUS MINUS 
 
+/* MODIFIED in example 5 */
 %left MULTIPLICATION DIVISION INT_DIVISION MODULE
 
 %left LPAREN RPAREN
 
 %nonassoc  UNARY
 
-/* Maximum precedence  */
+// Maximum precedence 
+/* MODIFIED in example 5 */
 %right POWER
-/*******************************************/
+
 
 %%
-//! \name Grammar rules
+ //! \name Grammar rules
 
-program : stmtlist {  }
+/* MODIFIED  Grammar in example 16 */
+
+program : stmtlist
+		  { 
+		    // Create a new AST
+			$$ = new lp::AST($1); 
+
+			// Assign the AST to the root
+			root = $$; 
+
+			// End of parsing
+			//	return 1;
+		  }
 ;
 
-		/* MODIFIED in example 5: SEMICOLON */ 
 stmtlist:  /* empty: epsilon rule */
+		  { 
+			// create a empty list of statements
+			$$ = new std::list<lp::Statement *>(); 
+		  }  
 
-		| stmtlist SEMICOLON     /* empty line */
+        | stmtlist stmt 
+		  { 
+			// copy up the list and add the stmt to it
+			$$ = $1;
+			$$->push_back($2);
 
-		/* MODIFIED in example 4: the result of the expression is displayed  */ 
-        | stmtlist exp SEMICOLON
-            { 
-				std::cout << BIYELLOW; 
-				std::cout << "Result: ";
-				std::cout << RESET; 
-				std::cout << $2 << std::endl << std::endl;
-            }
+			// Control the interative mode of execution of the interpreter
+			if (interactiveMode == true && control == 0)
+ 			{
+				for(std::list<lp::Statement *>::iterator it = $$->begin(); 
+						it != $$->end(); 
+						it++)
+				{
+					(*it)->printAST();
+					(*it)->evaluate();
+					
+				}
 
-        | stmtlist error SEMICOLON
-			{
-				// The function yyerror is called
-				// If %error-verbose is used then an error message is displayed
+				// Delete the AST code, because it has already run in the interactive mode.
+				$$->clear();
 			}
+		}
+
+    | stmtlist error 
+      { 
+			 // just copy up the stmtlist when an error occurs
+			 $$ = $1;
+
+			 // The previous look-ahead token ought to be discarded with `yyclearin;'
+			 yyclearin; 
+       } 
+;
+ 
+
+stmt: SEMICOLON  /* Empty statement: ";" */
+	  {
+		// Create a new empty statement node
+		$$ = new lp::EmptyStmt(); 
+	  }
+	| asgn  SEMICOLON
+	  {
+		// Default action
+		// $$ = $1;
+	  }
+	| print SEMICOLON
+	  {
+		// Default action
+		// $$ = $1;
+	  }
+	| read SEMICOLON
+	  {
+		// Default action
+		// $$ = $1;
+	  }
+	/*  NEW in example 17 */
+	| if 
+	 {
+		// Default action
+		// $$ = $1;
+	 }
+	/*  NEW in example 17 */
+	| while 
+	 {
+		// Default action
+		// $$ = $1;
+	 }
+	/*  NEW in example 17 */
+	| block 
+	 {
+		// Default action
+		// $$ = $1;
+	 }
 ;
 
-exp: 	NUMBER
-		{ $$ = $1; }
 
-	|	exp PLUS exp
-		{ $$ = $1 + $3; }
-
-	|	PLUS exp %prec UNARY
-		{ $$ = +$2; }
-
-	|	exp MINUS exp
-		{ $$ = $1 - $3; }
-
-	|	MINUS exp %prec UNARY
-		{ $$ = -$2; }
-
-	|	exp MULTIPLICATION exp
-		{ $$ = $1 * $3; }
-
-	|	exp DIVISION exp
-		{   
-			if (fabs($3) < ERROR_BOUND) 
-  				execerror("Runtime error in division", "Division by zero");
-			else 
-    	        $$ = $1 / $3;
+block: LETFCURLYBRACKET stmtlist RIGHTCURLYBRACKET  
+		{
+			// Create a new block of statements node
+			$$ = new lp::BlockStmt($2); 
 		}
+;
+
+controlSymbol:  /* Epsilon rule*/
+		{
+			// To control the interactive mode in "if" and "while" sentences
+			control++;
+		}
+	;
+
+	/*  NEW in example 17 */
+if:	/* Simple conditional statement */
+	IF controlSymbol cond stmt 
+    {
+		// Create a new if statement node
+		$$ = new lp::IfStmt($3, $4);
+
+		// To control the interactive mode
+		control--;
+	}
+
+	/* Compound conditional statement */
+	| IF controlSymbol cond stmt  ELSE stmt 
+	 {
+		// Create a new if statement node
+		$$ = new lp::IfStmt($3, $4, $6);
+
+		// To control the interactive mode
+		control--;
+	 }
+;
+
+	/*  NEW in example 17 */
+while:  WHILE controlSymbol cond stmt 
+		{
+			// Create a new while statement node
+			$$ = new lp::WhileStmt($3, $4);
+
+			// To control the interactive mode
+			control--;
+    }
+;
+
+	/*  NEW in example 17 */
+cond: 	LPAREN exp RPAREN
+		{ 
+			$$ = $2;
+		}
+;
+
+
+asgn:   VARIABLE ASSIGNMENT exp 
+		{ 
+			// Create a new assignment node
+			$$ = new lp::AssignmentStmt($1, $3);
+		}
+
+	|  VARIABLE ASSIGNMENT asgn 
+		{ 
+			// Create a new assignment node
+			$$ = new lp::AssignmentStmt($1, (lp::AssignmentStmt *) $3);
+		}
+
+	   /* NEW in example 11 */ 
+	| CONSTANT ASSIGNMENT exp 
+		{   
+ 			execerror("Semantic error in assignment: it is not allowed to modify a constant ", $1);
+		}
+	   /* NEW in example 11 */ 
+	| CONSTANT ASSIGNMENT asgn 
+		{   
+ 			execerror("Semantic error in multiple assignment: it is not allowed to modify a constant ",$1);
+		}
+;
+
+print:  PRINT exp 
+		{
+			// Create a new print node
+			 $$ = new lp::PrintStmt($2);
+		}
+;	
+
+read:  READ LPAREN VARIABLE RPAREN  
+		{
+			// Create a new read node
+			 $$ = new lp::ReadStmt($3);
+		}
+
+  	  /* NEW rule in example 11 */
+	| READ LPAREN CONSTANT RPAREN  
+		{   
+ 			execerror("Semantic error in \"read statement\": it is not allowed to modify a constant ",$3);
+		}
+;
+
+
+exp:	NUMBER 
+		{ 
+			// Create a new number node
+			$$ = new lp::NumberNode($1);
+		}
+
+	| 	exp PLUS exp 
+		{ 
+			// Create a new plus node
+			 $$ = new lp::PlusNode($1, $3);
+		 }
+
+	| 	exp MINUS exp
+      	{
+			// Create a new minus node
+			$$ = new lp::MinusNode($1, $3);
+		}
+
+	| 	exp MULTIPLICATION exp 
+		{ 
+			// Create a new multiplication node
+			$$ = new lp::MultiplicationNode($1, $3);
+		}
+
+	| 	exp DIVISION exp
+		{
+		  // Create a new division node	
+		  $$ = new lp::DivisionNode($1, $3);
+	   }
 
 	|	exp INT_DIVISION exp
 		{
-			if(fabs($3) < ERROR_BOUND)
-				execerror("Runtime error in division", "Division by zero");
-			else
-				$$ = (int) $1 / (int) $3;
-			
+			$$ = new lp::IntDivisionNode($1, $3);
 		}
 
-	|	LPAREN exp RPAREN
-		{ $$ = $2; }
+	| 	LPAREN exp RPAREN
+       	{ 
+		    // just copy up the expression node 
+			$$ = $2;
+		 }
+
+  	| 	PLUS exp %prec UNARY
+		{ 
+		  // Create a new unary plus node	
+  		  $$ = new lp::UnaryPlusNode($2);
+		}
+
+	| 	MINUS exp %prec UNARY
+		{ 
+		  // Create a new unary minus node	
+  		  $$ = new lp::UnaryMinusNode($2);
+		}
 
 	|	exp MODULE exp 
 		{
-			if (fabs($3) < ERROR_BOUND)  
-				execerror("Runtime error in modulo", "Division by zero");
-			else 
-				$$ = (int) $1 % (int) $3;
+		  // Create a new modulo node	
+
+		  $$ = new lp::ModuloNode($1, $3);
        }
-	
+
 	|	exp POWER exp 
-     	{ $$ = pow($1,$3); }
-
-	|  VARIABLE ASSIGNMENT exp 
-		{   
-			/* Get the identifier in the table of symbols as Variable */
-			lp::Variable *var = (lp::Variable *) table.getSymbol($1);
-
-			// Check if the type of the variable is NUMBER
-			if (var->getType() == NUMBER)
-			{
-				/* Get the identifier in the table of symbols as NumericVariable */
-				lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol($1);
-						
-				/* Assignment the value of expression to the identifier */
-				n->setValue($3);
-			}
-			// The type of variable $1 is not NUMBER
-			else
-			{
-				// Delete $1 from the table of symbols as Variable
-				table.eraseSymbol($1);
-
-				// Insert $1 in the table of symbols as NumericVariable 
-				// with the type NUMBER and the value $3
-				lp::NumericVariable *n = new lp::NumericVariable($1,VARIABLE,NUMBER,$3);
-
-				table.installSymbol(n);
-			}
-
-			/* Copy the value of the expression to allow multiple assignment: a = b = c = 2; */
-			$$ = $3;
+     	{ 
+		  // Create a new power node	
+  		  $$ = new lp::PowerNode($1, $3);
 		}
 
-	| VARIABLE
+	 | VARIABLE
 		{
-			/* Get the identifier in the table of symbols as NumericVariable */
-			lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol($1);
-
-			// Check if the type of the identifier is NUMBER
-			if (n->getType() == NUMBER)
-				// Copy the value of the identifier
-				$$ = n->getValue();
-			else			 
-				execerror("The variable is UNDEFINED", n->getName());
+		  // Create a new variable node	
+		  $$ = new lp::VariableNode($1);
 		}
 
+	 | CONSTANT
+		{
+		  // Create a new constant node	
+		  $$ = new lp::ConstantNode($1);
+
+		}
+
+	| BUILTIN LPAREN listOfExp RPAREN
+		{
+			// Get the identifier in the table of symbols as Builtin
+			lp::Builtin *f= (lp::Builtin *) table.getSymbol($1);
+
+			// Check the number of parameters 
+			if (f->getNParameters() ==  (int) $3->size())
+			{
+				switch(f->getNParameters())
+				{
+					case 0:
+						{
+							// Create a new Builtin Function with 0 parameters node	
+							$$ = new lp::BuiltinFunctionNode_0($1);
+						}
+						break;
+
+					case 1:
+						{
+							// Get the expression from the list of expressions
+							lp::ExpNode *e = $3->front();
+
+							// Create a new Builtin Function with 1 parameter node	
+							$$ = new lp::BuiltinFunctionNode_1($1,e);
+						}
+						break;
+
+					case 2:
+						{
+							// Get the expressions from the list of expressions
+							lp::ExpNode *e1 = $3->front();
+							$3->pop_front();
+							lp::ExpNode *e2 = $3->front();
+
+							// Create a new Builtin Function with 2 parameters node	
+							$$ = new lp::BuiltinFunctionNode_2($1,e1,e2);
+						}
+						break;
+
+					default:
+				  			 execerror("Syntax error: too many parameters for function ", $1);
+				} 
+			}
+			else
+	  			 execerror("Syntax error: incompatible number of parameters for function", $1);
+		}
+
+	| exp GREATER_THAN exp
+	 	{
+		  // Create a new "greater than" node	
+ 			$$ = new lp::GreaterThanNode($1,$3);
+		}
+
+	| exp GREATER_OR_EQUAL exp 
+	 	{
+		  // Create a new "greater or equal" node	
+ 			$$ = new lp::GreaterOrEqualNode($1,$3);
+		}
+
+	| exp LESS_THAN exp 	
+	 	{
+		  // Create a new "less than" node	
+ 			$$ = new lp::LessThanNode($1,$3);
+		}
+
+	| exp LESS_OR_EQUAL exp 
+	 	{
+		  // Create a new "less or equal" node	
+ 			$$ = new lp::LessOrEqualNode($1,$3);
+		}
+
+	| exp EQUAL exp 	
+	 	{
+		  // Create a new "equal" node	
+ 			$$ = new lp::EqualNode($1,$3);
+		}
+
+    | exp NOT_EQUAL exp 	
+	 	{
+		  // Create a new "not equal" node	
+ 			$$ = new lp::NotEqualNode($1,$3);
+		}
+
+    | exp AND exp 
+	 	{
+		  // Create a new "logic and" node	
+ 			$$ = new lp::AndNode($1,$3);
+		}
+
+    | exp OR exp 
+	 	{
+		  // Create a new "logic or" node	
+ 			$$ = new lp::OrNode($1,$3);
+		}
+
+    | NOT exp 
+	 	{
+		  // Create a new "logic negation" node	
+ 			$$ = new lp::NotNode($2);
+		}
 ;
- 
+
+
+listOfExp: 
+			/* Empty list of numeric expressions */
+			{
+			    // Create a new list STL
+				$$ = new std::list<lp::ExpNode *>(); 
+			}
+
+	|  exp restOfListOfExp
+			{
+				$$ = $2;
+
+				// Insert the expression in the list of expressions
+				$$->push_front($1);
+			}
+;
+
+restOfListOfExp:
+			/* Empty list of numeric expressions */
+			{
+			    // Create a new list STL
+				$$ = new std::list<lp::ExpNode *>(); 
+			}
+
+		|	COMMA exp restOfListOfExp
+			{
+				// Get the list of expressions
+				$$ = $3;
+
+				// Insert the expression in the list of expressions
+				$$->push_front($2);
+			}
+;
+
+
+
 %%
-
-

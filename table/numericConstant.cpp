@@ -1,6 +1,6 @@
 /*!	
-	\file    numericVariable.cpp
-	\brief   Code of some functions of NumericVariable class
+	\file    numericConstant.cpp
+	\brief   Code of some functions of NumericConstant class
 	\author 
 	\date    2017-10-19
 	\version 1.0
@@ -12,39 +12,39 @@
 // Delete the comment if you want to use atof in the operator overload >>
 // #include <stdlib.h>
 
-#include "numericVariable.hpp"
+#include "numericConstant.hpp"
 
 
 /*
- Definitions of the read and write functions of the NumericVariable class 
+ Definitions of the read and write functions of the NumericConstant class 
 */
 
-void lp::NumericVariable::read()
+void lp::NumericConstant::read()
 {
   // Inherited attributes
-   std::cout << "Name of the NumericVariable: ";
+   std::cout << "Name of the NumericConstant: ";
    std::cin >> this->_name;
 
-   std::cout << "Token of the NumericVariable: ";
+   std::cout << "Token of the NumericConstant: ";
    std::cin >> this->_token;
    // The \n character is read 
    std::cin.ignore(); 
 
-   std::cout << "Type of the NumericVariable: ";
+   std::cout << "Type of the NumericConstant: ";
    std::cin >> this->_type;
    // The \n character is read 
    std::cin.ignore(); 
 
 
    // Own attribute
-   std::cout << "Value of the NumericVariable: ";
+   std::cout << "Value of the NumericConstant: ";
    std::cin >> this->_value;
    // The \n character is read 
    std::cin.ignore(); 
 }
 
 
-void lp::NumericVariable::write() const
+void lp::NumericConstant::write() const
 {
   // Inherited methods
   std::cout << "Name:" << this->getName() << std::endl;
@@ -55,7 +55,7 @@ void lp::NumericVariable::write() const
   std::cout << "Value:" << this->getValue() << std::endl;
 }
 
-lp::NumericVariable &lp::NumericVariable::operator=(const lp::NumericVariable &n)
+lp::NumericConstant &lp::NumericConstant::operator=(const lp::NumericConstant &n)
   {
  	// Check that is not the current object
 		if (this != &n) 
@@ -82,7 +82,7 @@ lp::NumericVariable &lp::NumericVariable::operator=(const lp::NumericVariable &n
 */
 namespace lp{
 
-std::istream &operator>>(std::istream &i, lp::NumericVariable &n)
+std::istream &operator>>(std::istream &i, lp::NumericConstant &n)
 {
   // Inherited attributes
   i >> n._name;
@@ -96,10 +96,6 @@ std::istream &operator>>(std::istream &i, lp::NumericVariable &n)
   // The \n character is read 
   i.ignore();
 
-
-  i >> n._token;
-  // The \n character is read 
-  i.ignore();
 
   ////////////////////////////////////
 
@@ -131,7 +127,7 @@ std::istream &operator>>(std::istream &i, lp::NumericVariable &n)
 }
 
 
-std::ostream &operator<<(std::ostream &o, lp::NumericVariable const &n)
+std::ostream &operator<<(std::ostream &o, lp::NumericConstant const &n)
 {
   // Inherited attributes
   o << n._name << std::endl;
