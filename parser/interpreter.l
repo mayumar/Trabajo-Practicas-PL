@@ -144,10 +144,6 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 							}
                      }
 
-"#o"    { return OR; }
-"#y"    { return AND; }
-"#no"   { return NOT; }
-
 ":="    { return ASSIGNMENT; }
 
 "-"     { return MINUS;  } 	
