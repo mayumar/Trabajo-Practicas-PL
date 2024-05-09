@@ -340,7 +340,7 @@ controlSymbol:  /* Epsilon rule*/
 
 	/*  NEW in example 17 */
 if:	/* Simple conditional statement */
-	IF controlSymbol cond stmt END_IF
+	IF controlSymbol THEN cond stmtlist END_IF
     {
 		// Create a new if statement node
 		$$ = new lp::IfStmt($3, $4);
@@ -350,7 +350,7 @@ if:	/* Simple conditional statement */
 	}
 
 	/* Compound conditional statement */
-	| IF controlSymbol cond stmt  ELSE stmt END_IF
+	| IF controlSymbol THEN cond stmtlist ELSE stmtlist END_IF
 	 {
 		// Create a new if statement node
 		$$ = new lp::IfStmt($3, $4, $6);

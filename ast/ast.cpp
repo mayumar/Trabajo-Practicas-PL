@@ -1343,6 +1343,7 @@ void lp::EmptyStmt::evaluate()
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // NEW in example 17
 
+// TODO: ACA TRATAR STMT1 COMO UNA LISTA
 void lp::IfStmt::printAST() 
 {
   std::cout << "IfStmt: "  << std::endl;
@@ -1352,7 +1353,7 @@ void lp::IfStmt::printAST()
 
   // Consequent
   std::cout << "\t";
-  this->_stmt1->printAST();
+  this->_stmts1->printAST();
 
  // The alternative is printASTed if exists
   if (this->_stmt2 != NULL)
