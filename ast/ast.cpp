@@ -1353,19 +1353,13 @@ void lp::IfStmt::printAST()
 
   // Consequent
   std::cout << "\t";
-  for (auto stmtIter = this->_stmts1->begin(); stmtIter != this->_stmts1->end(); stmtIter++) 
-  {
-     (*stmtIter)->printAST();
-  }
+  this->_stmt1->printAST();
 
  // The alternative is printASTed if exists
   if (this->_stmt2 != NULL)
      {  
        std::cout << "\t";
-	   for (auto stmtIter = this->_stmts2->begin(); stmtIter != this->_stmts2->end(); stmtIter++) 
-	   {
-			(*stmtIter)->printAST();
-	   }
+	   this->_stmt2->printAST();
      }
 
   std::cout << std::endl;
@@ -1376,18 +1370,12 @@ void lp::IfStmt::evaluate()
 {
    // If the condition is true,
 	if (this->_cond->evaluateBool() == true ) {
-     // the consequent is run 
-		for (auto stmtIter = this->_stmts1->begin(); stmtIter != this->_stmts1->end(); stmtIter++) 
-		{
-			(*stmtIter)->evaluate();
-		}
+     // the consequent is run 		
+		this->_stmt1->evaluate();
 	}
     // Otherwise, the alternative is run if exists
 	else if (this->_stmt2 != NULL) {
-		  for (stmtIter = this->_stmts2->begin(); stmtIter != this->_stmts2->end(); stmtIter++) 
-		  {
-				(*stmtIter)->evaluate();
-		  }
+		this->_stmt2->evaluate();
 	}
 }
 

@@ -1617,8 +1617,8 @@ class IfStmt : public Statement
 {
  private:
   ExpNode *_cond;    //!< Condicion of the if statement
-  std::list<Statement *> *_stmts1; //!< Statements of the consequent
-  std::list<Statement *> *_stmts2; //!< Statements of the alternative
+  Statement *_stmt1; //!< Statements of the consequent
+  Statement *_stmt2; //!< Statements of the alternative
 
   public:
 /*!		
@@ -1627,11 +1627,11 @@ class IfStmt : public Statement
 	\param statement1: Statement of the consequent
 	\post  A new IfStmt is created with the parameters
 */
-  IfStmt(ExpNode *condition, std::list<Statement *> *stmts1)
+  IfStmt(ExpNode *condition, Statement *statement1)
 	{
 		this->_cond = condition;
-		this->_stmts1 = stmts1;
-		this->_stmts2 = NULL;
+		this->_stmt1 = statement1;
+		this->_stmt2 = NULL;
 	}
 
 
@@ -1642,11 +1642,11 @@ class IfStmt : public Statement
 	\param statement2: Statement of the alternative
 	\post  A new IfStmt is created with the parameters
 */
-  IfStmt(ExpNode *condition, std::list<Statement *> *stmts1, std::list<Statement *> *stmts2)
+  IfStmt(ExpNode *condition, Statement *statement1, Statement *statement2)
 	{
 		this->_cond = condition;
-		this->_stmts1 = stmts1;
-		this->_stmts2 = stmts2;
+		this->_stmt1 = statement1;
+		this->_stmt2 = statement2;
 	}
 
 

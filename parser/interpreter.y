@@ -340,20 +340,20 @@ controlSymbol:  /* Epsilon rule*/
 
 	/*  NEW in example 17 */
 if:	/* Simple conditional statement */
-	IF controlSymbol THEN cond stmtlist END_IF
+	IF controlSymbol cond THEN stmtlist END_IF
     {
 		// Create a new if statement node
-		$$ = new lp::IfStmt($3, $4);
+		$$ = new lp::IfStmt($3, new lp::BlockStmt($5));
 
 		// To control the interactive mode
 		control--;
 	}
 
 	/* Compound conditional statement */
-	| IF controlSymbol THEN cond stmtlist ELSE stmtlist END_IF
+	| IF controlSymbol cond THEN stmtlist ELSE stmtlist END_IF
 	 {
 		// Create a new if statement node
-		$$ = new lp::IfStmt($3, $4, $6);
+		$$ = new lp::IfStmt($3, new lp::BlockStmt($5), new lp::BlockStmt($7));
 
 		// To control the interactive mode
 		control--;
