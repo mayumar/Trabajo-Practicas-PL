@@ -1411,7 +1411,29 @@ void lp::WhileStmt::evaluate()
 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
+void lp::RepeatStmt::printAST() 
+{
+	std::cout << "RepeatStmt: "  << std::endl;
+	// Condition
+	std::cout << "\t";
+	this->_cond->printAST();
+
+	// Body of the while loop
+	std::cout << "\t";
+	this->_stmt->printAST();
+
+	std::cout << std::endl;
+}
+
+void lp::RepeatStmt::evaluate()
+{
+	do {
+		this->_stmt->evaluate();
+	} while(!this->_cond->evaluateBool());
+}
 
 
 

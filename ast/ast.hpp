@@ -1714,6 +1714,43 @@ class WhileStmt : public Statement
   void evaluate();
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+class RepeatStmt : public Statement
+{
+	private:
+  		Statement *_stmt; //!< Statement of the body of the repeat loop
+		ExpNode *_cond; //!< Condicion of the repeat statement
+	
+	public:
+	/*!		
+		\brief Constructor of  RepeatStmt
+		\param statement: Statement of the body of the loop 
+		\param condition: ExpNode of the condition
+		\post  A new RepeatStmt is created with the parameters
+	*/
+	RepeatStmt(Statement *statement, ExpNode *condition)
+	{
+		this->_stmt = statement;
+		this->_cond = condition;
+	}
+
+	/*!
+		\brief   Print the AST for RepeatStmt
+		\return  void
+		\sa		   evaluate
+	*/
+	void printAST();
+
+	/*!	
+		\brief   Evaluate the RepeatStmt
+		\return  void
+		\sa	   	 printAST
+	*/
+	void evaluate();
+};
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

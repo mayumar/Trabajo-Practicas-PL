@@ -1,0 +1,6 @@
+leer(dato);
+
+repetir
+    escribir dato;
+    dato := dato - 1;
+hasta (dato = 0);
