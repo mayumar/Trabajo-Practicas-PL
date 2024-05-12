@@ -1421,7 +1421,7 @@ void lp::RepeatStmt::printAST()
 	std::cout << "\t";
 	this->_cond->printAST();
 
-	// Body of the while loop
+	// Body of the repeat loop
 	std::cout << "\t";
 	this->_stmt->printAST();
 
@@ -1435,7 +1435,59 @@ void lp::RepeatStmt::evaluate()
 	} while(!this->_cond->evaluateBool());
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
+void lp::ForStmt::printAST()
+{
+	std::cout << "ForStmt: "  << std::endl;
+	// Variable id
+	std::cout << "\t" << this->_id;
+
+	// Expression 1
+	std::cout << "\t";
+	this->_exp1->printAST();
+
+	// Expression 2
+	std::cout << "\t";
+	this->_exp2->printAST();
+
+	if (this->_exp3 != NULL)
+	{
+		std::cout << "\t";
+		this->_exp3->printAST();
+	}
+
+	// Body of the for loop
+	std::cout << "\t";
+	this->_stmt->printAST();
+
+	std::cout << std::endl;
+}
+
+void lp::ForStmt::evaluate()
+{
+	double value = this->_exp1->evaluateNumber();
+	double end = this->_exp2->evaluateNumber();
+	double inc = this->_exp3 != NULL ? this->_exp3->evaluateNumber() : 1;
+
+	lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol(this->_id);
+
+	n->setValue(value);
+
+	if(n->getType() == UNDEFINED)
+		n->setType(NUMBER);
+
+	if(value > end || inc < 0)
+	{
+		std::cout << RED;
+		std::cout << "ERROR: Valores incorrectos " << "(" << value << ">" << end << "O" << inc << "<" << 0 << ")";
+		std::cout << RESET;
+	}
+
+	for(; n->getValue() <= end; n->setValue(n->getValue()+inc))
+		this->_stmt->evaluate();
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

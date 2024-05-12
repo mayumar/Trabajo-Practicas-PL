@@ -1,0 +1,3 @@
+para i desde 0 hasta 10 paso 2 hacer
+    escribir(i);
+fin_para;

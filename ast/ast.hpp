@@ -1751,6 +1751,68 @@ class RepeatStmt : public Statement
 	void evaluate();
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+class ForStmt : public Statement
+{
+	private:
+		std::string _id;
+		ExpNode *_exp1;
+		ExpNode *_exp2;
+		ExpNode *_exp3;
+		Statement *_stmt;
+	
+	public:
+	/*!		
+		\brief Constructor of  ForStmt
+		\param id: Variable id 
+		\param expression1: FROM expression of the loop 
+		\param expression2: UNTIL expression of the loop 
+		\param expression3: STEP expression of the loop 
+		\param statement: Statement of the body of the loop 
+		\post  A new ForStmt is created with the parameters
+	*/
+	ForStmt(std::string id, ExpNode *expression1, ExpNode *expression2, ExpNode *expression3, Statement *statement)
+	{
+		this->_id = id;
+		this->_exp1 = expression1;
+		this->_exp2 = expression2;
+		this->_exp3 = expression3;
+		this->_stmt = statement;
+	}
+
+	/*!		
+		\brief Constructor of  ForStmt
+		\param id: Variable id 
+		\param expression1: FROM expression of the loop 
+		\param expression2: UNTIL expression of the loop 
+		\param statement: Statement of the body of the loop 
+		\post  A new ForStmt is created with the parameters
+	*/
+	ForStmt(std::string id, ExpNode *expression1, ExpNode *expression2, Statement *statement)
+	{
+		this->_id = id;
+		this->_exp1 = expression1;
+		this->_exp2 = expression2;
+		this->_exp3 = NULL;
+		this->_stmt = statement;
+	}
+
+	/*!
+		\brief   Print the AST for ForStmt
+		\return  void
+		\sa		   evaluate
+	*/
+	void printAST();
+
+	/*!	
+		\brief   Evaluate the ForStmt
+		\return  void
+		\sa	   	 printAST
+	*/
+	void evaluate();
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
