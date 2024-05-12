@@ -1481,7 +1481,7 @@ void lp::ForStmt::evaluate()
 	if(value > end || inc < 0)
 	{
 		std::cout << RED;
-		std::cout << "ERROR: Valores incorrectos " << "(" << value << ">" << end << "O" << inc << "<" << 0 << ")";
+		std::cout << "ERROR: Valores incorrectos en bucle 'para'\ninicio = " << value << "\nfinal = " << end << "\n";
 		std::cout << RESET;
 	}
 

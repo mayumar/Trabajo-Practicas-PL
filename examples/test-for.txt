@@ -1,3 +1,6 @@
-para i desde 1 hasta 10 hacer
+leer(init);
+leer(end);
+
+para i desde init hasta end hacer
     escribir(i);
 fin_para;
