@@ -100,6 +100,8 @@ STRING \'([^'\\]|\\.)*\'
                        return NUMBER; 
                       }
 
+{STRING} { return STRING; }
+
 
 {IDENTIFIER}   		 {
 						 /* NEW in example 7 */
@@ -149,8 +151,6 @@ STRING \'([^'\\]|\\.)*\'
 							}
                      }
 
-{STRING} {  }
-
 ":="    { return ASSIGNMENT; }
 
 "-"     { return MINUS;  } 	
@@ -161,7 +161,7 @@ STRING \'([^'\\]|\\.)*\'
 "%"     { return MODULE; }
 "**"    { return POWER; }
  
-"||"    { /* return CONCAT; */ }
+"||"    { return CONCAT; }
 
 "<"		{ return LESS_THAN; }
 "<="	{ return LESS_OR_EQUAL; }

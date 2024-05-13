@@ -26,6 +26,7 @@
 
 // 
 #include "../table/numericVariable.hpp"
+#include "../table/stringVariable.hpp"
 #include "../table/logicalVariable.hpp"
 
 #include "../table/numericConstant.hpp"
@@ -90,6 +91,27 @@ double lp::VariableNode::evaluateNumber()
 	}
 
 	// Return the value of the NumericVariable
+	return result;
+}
+
+std::string lp::VariableNode::evaluateString()
+{
+	std::string result = "";
+
+	if (this->getType() == STRING)
+	{
+		// Get the identifier in the table of symbols as StringVariable
+		lp::StringVariable *var = (lp::StringVariable *) table.getSymbol(this->_id);
+
+		// Copy the value of the StringVariable
+		result = var->getValue();
+	}
+	else
+	{
+		warning("Runtime error in evaluateString(): the variable is not a string", this->_id);
+	}
+
+	// Return the value of the StringVariable
 	return result;
 }
 
@@ -204,6 +226,26 @@ double lp::NumberNode::evaluateNumber()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+int lp::StringNode::getType()
+{
+	return STRING;
+}
+
+
+void lp::StringNode::printAST()
+{
+  std::cout << "StringNode: " << this->_value << std::endl;
+}
+
+std::string lp::StringNode::evaluateString() 
+{ 
+    return this->_value; 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 int lp::NumericUnaryOperatorNode::getType()
 {
 	int result;
@@ -251,6 +293,21 @@ int lp::NumericOperatorNode::getType()
 		result = NUMBER;
 	else
 		warning("Runtime error: incompatible types for", "Numeric Operator");
+
+	return	result;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+int lp::StringOperatorNode::getType()
+{
+	int result = 0;
+		
+	if ((this->_left->getType() == STRING || this->_left->getType() == NUMBER) and (this->_right->getType() == STRING || this->_left->getType() == NUMBER))
+		result = STRING;
+	else
+		warning("Runtime error: incompatible types for", "String Operator");
 
 	return	result;
 }
@@ -591,6 +648,35 @@ double lp::PowerNode::evaluateNumber()
 	else
 	{
 		warning("Runtime error: the expressions are not numeric for", "Power");
+	}
+
+  return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::ConcatNode::printAST() 
+{
+  std::cout << "ConcatNode: +"  << std::endl;
+  std::cout << "\t"; 
+	this->_left->printAST();
+	std::cout << "\t"; 
+	this->_right->printAST();
+}
+
+std::string lp::ConcatNode::evaluateString()
+{
+	std::string result = "";
+
+	// Ckeck the types of the expressions
+	if (this->getType() == STRING)
+	{
+		result = this->_left->evaluateString() + this->_right->evaluateString();
+	}
+	else
+	{
+		warning("Runtime error: the expressions are not strings for ", "Concat");
 	}
 
   return result;
@@ -1144,6 +1230,35 @@ void lp::AssignmentStmt::evaluate()
 					// with the type BOOL and the value 
 					lp::LogicalVariable *v = new lp::LogicalVariable(this->_id,
 											VARIABLE,BOOL,value);
+					table.installSymbol(v);
+				}
+			}
+			break;
+
+			case STRING:
+			{
+				std::string value;
+				// evaluate the expression as BOOL
+			 	value = this->_exp->evaluateString();
+
+				if (firstVar->getType() == STRING)
+				{
+				  	// Get the identifier in the table of symbols as StringVariable
+					lp::StringVariable *v = (lp::StringVariable *) table.getSymbol(this->_id);
+
+					// Assignment the value to the identifier in the table of symbols
+					v->setValue(value);
+				}
+				// The type of variable is not BOOL
+				else
+				{
+					// Delete the variable from the table of symbols 
+					table.eraseSymbol(this->_id);
+
+					// Insert the variable in the table of symbols as NumericVariable 
+					// with the type STRING and the value 
+					lp::StringVariable *v = new lp::StringVariable(this->_id,
+											VARIABLE,STRING,value);
 					table.installSymbol(v);
 				}
 			}

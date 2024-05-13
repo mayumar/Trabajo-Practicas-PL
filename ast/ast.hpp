@@ -55,8 +55,18 @@ namespace lp
     virtual double evaluateNumber()
 	{
 		return 0.0;
-	}		
+	}
 
+	/*!	
+		\brief   Evaluate the expression as STRING
+		\warning Virtual function: could be redefined in the heir classes
+		\return  std::string
+		\sa		   getType, printAST, evaluateBool
+	*/
+    virtual std::string evaluateString()
+	{
+		return "";
+	}
 
 	/*!	
 		\brief   Evaluate the expression as BOOL
@@ -118,6 +128,13 @@ class VariableNode : public ExpNode
 		\sa		   printAST
 	*/
 	  double evaluateNumber();
+
+	/*!	
+		\brief   Evaluate the Variable as STRING
+		\return  double
+		\sa		   printAST
+	*/
+	  std::string evaluateString();
 
 	/*!	
 		\brief   Evaluate the Variable as BOOL
@@ -234,7 +251,48 @@ class NumberNode : public ExpNode
 	double evaluateNumber();
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
+class StringNode : public ExpNode 
+{
+ private: 	
+   std::string _value; //!< \brief number of the StringNode
+ 
+ public:
+
+	/*!		
+		\brief Constructor of StringNode
+		\param value: std::string
+		\post  A new StringNode is created with the value of the parameter
+		\note  Inline function
+	*/
+	inline StringNode(std::string value)
+	{
+	    this->_value = value;
+	}
+
+	/*!	
+	\brief   Get the type of the expression: NUMBER
+	\return  int
+	\sa		   printAST, evaluateNumber
+	*/
+	int getType();
+
+	/*!
+		\brief   Print the AST for expression
+		\return  void
+		\sa		   getType, evaluateNumber
+	*/
+	void printAST();
+
+	/*!	
+		\brief   Evaluate the expression
+		\return  std::string
+		\sa		   getType, printAST
+	*/
+	std::string evaluateString();
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -488,7 +546,36 @@ class NumericOperatorNode : public OperatorNode
 	int getType();
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
+/*!	
+  \class   StringOperatorNode
+  \brief   Definition of atributes and methods of StringOperatorNode class
+  \note    StringOperatorNode Class publicly inherits from OperatorNode class
+  \warning Abstract class, because it does not redefine the printAST method of ExpNode
+*/
+class StringOperatorNode : public OperatorNode 
+{
+	public:
+
+	/*!		
+		\brief Constructor of StringOperatorNode uses OperatorNode's constructor as members initializer
+		\param L: pointer to ExpNode
+		\param R: pointer to ExpNode
+		\post  A new StringOperatorNode is created with the parameters
+	*/
+    StringOperatorNode(ExpNode *L, ExpNode *R): OperatorNode(L,R) 
+	{
+		//	Empty
+	}
+
+	/*!	
+	\brief   Get the type of the children expressions
+	\return  int
+	*/
+	int getType();
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -824,6 +911,44 @@ class PowerNode : public NumericOperatorNode
 	\sa		   printAST
 */
   double evaluateNumber();
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   ConcatNode
+  \brief   Definition of atributes and methods of ConcatNode class
+  \note    ConcatNode Class publicly inherits from StringOperatorNode class 
+		   and adds its own printAST and evaluate functions
+*/
+class ConcatNode : public StringOperatorNode 
+{
+  public:
+/*!		
+	\brief Constructor of ConcatNode uses StringOperatorNode's constructor as members initializer
+	\param L: pointer to ExpNode
+	\param R: pointer to ExpNode
+	\post  A new ConcatNode is created with the parameter
+*/
+  ConcatNode(ExpNode *L, ExpNode *R): StringOperatorNode(L,R) 
+  {
+		// Empty
+  }
+
+/*!
+	\brief   Print the AST for ConcatNode
+	\return  void
+	\sa		   evaluateString
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the ConcatNode
+	\return  double
+	\sa		   printAST
+*/
+  std::string evaluateString();
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1904,7 +2029,3 @@ class AST {
 
 // End of _AST_HPP_
 #endif
-
-
-
-

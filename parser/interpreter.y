@@ -184,6 +184,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 /*******************************************/
 /* MODIFIED in example 4 */
 %token <number> NUMBER
+
 /*******************************************/
 
 /*******************************************/
@@ -192,7 +193,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 /*******************************************/
 
 /* MODIFIED in examples 11, 13 */
-%token <string> VARIABLE UNDEFINED CONSTANT BUILTIN
+%token <string> VARIABLE STRING UNDEFINED CONSTANT BUILTIN
 
 /* Left associativity */
 
@@ -211,7 +212,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %left PLUS MINUS 
 
 /* MODIFIED in example 5 */
-%left MULTIPLICATION DIVISION INT_DIVISION MODULE
+%left MULTIPLICATION DIVISION INT_DIVISION MODULE CONCAT
 
 %left LPAREN RPAREN
 
@@ -490,6 +491,11 @@ exp:	NUMBER
 			$$ = new lp::IntDivisionNode($1, $3);
 		}
 
+	|	exp CONCAT exp
+		{
+			$$ = new lp::ConcatNode($1, $3);
+		}
+
 	| 	LPAREN exp RPAREN
        	{ 
 		    // just copy up the expression node 
@@ -525,6 +531,11 @@ exp:	NUMBER
 		{
 		  // Create a new variable node	
 		  $$ = new lp::VariableNode($1);
+		}
+
+	|	STRING
+		{
+		  $$ = new lp::StringNode($1);
 		}
 
 	 | CONSTANT

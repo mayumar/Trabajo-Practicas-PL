@@ -1,7 +1,7 @@
 /*!	
 	\file    numericVariable.cpp
-	\brief   Code of some functions of NumericVariable class
-	\author 
+	\brief   Code of some functions of StringVariable class
+	\authos 
 	\date    2017-10-19
 	\version 1.0
 */
@@ -72,3 +72,75 @@ lp::StringVariable& lp::StringVariable::operator=(const lp::StringVariable &s)
     // Return the current object
     return *this;
 }
+
+/*!	
+	\namespace lp
+	\brief Name space for the subject Language Processors
+*/
+namespace lp{
+
+    std::istream &operator>>(std::istream &i, lp::StringVariable &s)
+    {
+        // Inherited attributes
+        i >> s._name;
+
+        i >> s._token;
+        // The \n character is read 
+        i.ignore();
+
+
+        i >> s._type;
+        // The \n character is read 
+        i.ignore();
+
+
+        i >> s._token;
+        // The \n character is read 
+        i.ignore();
+
+        ////////////////////////////////////
+
+        // Own attribute
+
+        i >> s._value;
+        // The \n character is read 
+        i.ignore();
+
+        ////////////////////////////////////
+
+        /* Alternative way using an auxiliar string 
+
+        std::string auxiliar;
+
+        std::getline(i,auxiliar);
+        s._token = atof(auxiliar.c_str());
+
+        std::getline(i,auxiliar);
+        s._type = atof(auxiliar.c_str());
+
+        std::getline(i,auxiliar);
+        s._value = atof(auxiliar.c_str());
+
+        */
+
+        // The input stream is returned
+        return i;
+    }
+
+
+    std::ostream &operator<<(std::ostream &o, lp::StringVariable const &s)
+    {
+        // Inherited attributes
+        o << s._name << std::endl;
+
+        o << s._token << std::endl;
+
+        o << s._type << std::endl;
+
+        // Own attribute
+        o << s._value << std::endl;
+
+        // The output stream is returned
+        return o;
+    }
+} 

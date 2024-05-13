@@ -31,7 +31,6 @@ namespace lp {
             std::string _value;
 
         public:
-
             /*!	
                 \name Constructors
             */
