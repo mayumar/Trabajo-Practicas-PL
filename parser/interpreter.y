@@ -47,6 +47,10 @@
 #include "../table/numericVariable.hpp"
 /*******************************************/
 
+/*******************************************/
+#include "../table/stringVariable.hpp"
+/*******************************************/
+
 /* NEW in example 15 */
 #include "../table/logicalVariable.hpp"
 
@@ -184,7 +188,6 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 /*******************************************/
 /* MODIFIED in example 4 */
 %token <number> NUMBER
-
 /*******************************************/
 
 /*******************************************/

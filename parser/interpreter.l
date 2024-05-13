@@ -38,6 +38,7 @@
 #include "../table/table.hpp"
 
 #include "../table/numericVariable.hpp"
+#include "../table/stringVariable.hpp"
 
 extern lp::Table table; //!< External Table of Symbols
 /*********************************************/
