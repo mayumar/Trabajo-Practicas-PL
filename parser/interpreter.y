@@ -163,7 +163,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %type <stmts> stmtlist
 
 // New in example 17: if, while, block
-%type <st> stmt asgn print read if while repeat for block
+%type <st> stmt asgn print read read_string if while repeat for block
 
 %type <prog> program
 
@@ -300,6 +300,11 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		// $$ = $1;
 	  }
 	| read SEMICOLON
+	  {
+		// Default action
+		// $$ = $1;
+	  }
+	| read_string SEMICOLON
 	  {
 		// Default action
 		// $$ = $1;
@@ -458,6 +463,18 @@ read:  READ LPAREN VARIABLE RPAREN
 		}
 ;
 
+read_string:  READ_STRING LPAREN VARIABLE RPAREN  
+		{
+			// Create a new read_string node
+			 $$ = new lp::ReadStringStmt($3);
+		}
+
+  	  /* NEW rule in example 11 */
+	| READ_STRING LPAREN CONSTANT RPAREN  
+		{   
+ 			execerror("Semantic error in \"read_string statement\": it is not allowed to modify a constant ",$3);
+		}
+;
 
 exp:	NUMBER 
 		{ 
@@ -522,7 +539,7 @@ exp:	NUMBER
 		  // Create a new modulo node	
 
 		  $$ = new lp::ModuloNode($1, $3);
-       }
+		}
 
 	|	exp POWER exp 
      	{ 
@@ -530,25 +547,24 @@ exp:	NUMBER
   		  $$ = new lp::PowerNode($1, $3);
 		}
 
-	 | VARIABLE
+	 |	VARIABLE
 		{
 		  // Create a new variable node	
 		  $$ = new lp::VariableNode($1);
 		}
 
-	|	STRING
+	| 	STRING
 		{
 		  $$ = new lp::StringNode($1);
 		}
 
-	 | CONSTANT
+	| 	CONSTANT
 		{
 		  // Create a new constant node	
 		  $$ = new lp::ConstantNode($1);
-
 		}
 
-	| BUILTIN LPAREN listOfExp RPAREN
+	| 	BUILTIN LPAREN listOfExp RPAREN
 		{
 			// Get the identifier in the table of symbols as Builtin
 			lp::Builtin *f= (lp::Builtin *) table.getSymbol($1);

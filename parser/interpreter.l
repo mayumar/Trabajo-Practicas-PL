@@ -94,15 +94,22 @@ STRING \'([^'\\]|\\.)*\'
 		}
 
 {NUMBER}  			  {
-					  /* MODIFIED in example 4 */
-					  /* Conversion of type and sending of the numerical value to the parser */
-					   yylval.number = atof(yytext); 
+						/* MODIFIED in example 4 */
+						/* Conversion of type and sending of the numerical value to the parser */
+						yylval.number = atof(yytext); 
 
-                       return NUMBER; 
+						return NUMBER; 
                       }
 
-{STRING} { return STRING; }
+{STRING} 			  {
+						/* Remove quotation marks */
+						yytext[yyleng-1] = '\0';
+						yytext++;
+						yyleng--;
 
+						yylval.string = yytext;
+						return STRING;
+					  }
 
 {IDENTIFIER}   		 {
 						 /* NEW in example 7 */
@@ -218,7 +225,7 @@ STRING \'([^'\\]|\\.)*\'
 									yymore(); 
 								}
 
-<ERROR>(.|\n)                { 
+<ERROR>(.|\n)               { 
 								/* NEW in example 3 */
 								/* Rewind one position */
 								yyless(yyleng-1); 
