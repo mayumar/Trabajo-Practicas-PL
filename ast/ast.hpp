@@ -1814,6 +1814,64 @@ class ForStmt : public Statement
 	void evaluate();
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+class SwitchStmt : public Statement
+{
+	private:
+		ExpNode *_cond;
+		ExpNode *_caseExp;
+		Statement *_caseStmt;
+		Statement *_defaultStmt;
+	
+	public:
+	/*!		
+		\brief Constructor of  SwitchStmt
+		\param condition: expresion del switch entre parentesis
+		\param caseExpression: CASE expresion of the switch
+		\param caseStatement: CASE statemente of the switch
+		\post  A new SwitchStmt is created with the parameters
+	*/
+	SwitchStmt(ExpNode *condition, ExpNode *caseExpresssion, Statement *caseStatement)
+	{
+		this->_cond = condition;
+		this->_caseExp = caseExpresssion;
+		this->_caseStmt = caseStatement;
+		this->_defaultStmt = NULL;
+	}
+
+	/*!		
+		\brief Constructor of  SwitchStmt
+		\param condition: expresion del switch entre parentesis
+		\param caseExpression: CASE expresion of the switch
+		\param caseStatement: CASE statements of the switch
+		\param defaultStatement: DEFAULT statements of the switch
+		\post  A new SwitchStmt is created with the parameters
+	*/
+	SwitchStmt(ExpNode *condition, ExpNode *caseExpresssion, Statement *caseStatement, Statement *defaultStatement)
+	{
+		this->_cond = condition;
+		this->_caseExp = caseExpresssion;
+		this->_caseStmt = caseStatement;
+		this->_defaultStmt = defaultStatement;
+	}
+
+	/*!
+		\brief   Print the AST for SwitchStmt
+		\return  void
+		\sa		   evaluate
+	*/
+	void printAST();
+
+	/*!	
+		\brief   Evaluate the SwitchStmt
+		\return  void
+		\sa	   	 printAST
+	*/
+	void evaluate();
+};
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

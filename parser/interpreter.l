@@ -166,6 +166,8 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 "("		{ return LPAREN; }
 ")"		{ return RPAREN; }
 
+":"		{ return COLON; }
+
 
 <<EOF>> { /* The interpreter finishes when finds the end of file character */
 		/*  PLACE(24,10);

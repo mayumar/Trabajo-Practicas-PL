@@ -1491,6 +1491,48 @@ void lp::ForStmt::evaluate()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::SwitchStmt::printAST(){
+	std::cout << "SwitchStmt: "  << std::endl;
+	// Condicion
+	std::cout << "\t";
+	this->_cond->printAST();
+
+	// Expresion del case
+	std::cout << "\t";
+	this->_caseExp->printAST();
+
+	// Statements del case
+	std::cout << "\t";
+	this->_caseStmt->printAST();
+
+	// Expresion del default
+	if (this->_defaultStmt != NULL)
+	{
+		//Staments del default
+		std::cout << "\t";
+		this->_defaultStmt->printAST();
+	}
+
+	std::cout << std::endl;
+}
+
+void lp::SwitchStmt::evaluate(){
+	double value = this->_cond->evaluateNumber();
+	double caseNumber = this->_caseExp->evaluateNumber();
+
+	if(value == caseNumber)
+	{
+		this->_caseStmt->evaluate();
+	}
+	else if(this->_defaultStmt != NULL)
+	{
+		this->_defaultStmt->evaluate();
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 // NEW in example 17
 
 void lp::BlockStmt::printAST() 

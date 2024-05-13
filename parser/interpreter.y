@@ -159,7 +159,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %type <stmts> stmtlist
 
 // New in example 17: if, while, block
-%type <st> stmt asgn print read if while repeat for block
+%type <st> stmt asgn print read if while repeat for switch block
 
 %type <prog> program
 
@@ -180,6 +180,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 /* NEW in example 14 */
 %token COMMA
+
+%token COLON
 
 /*******************************************/
 /* MODIFIED in example 4 */
@@ -324,6 +326,12 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		// Default action
 		// $$ = $1;
 	 }
+	/* Switch statement */
+	| switch SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
 	/*  NEW in example 17 */
 	| block 
 	 {
@@ -402,6 +410,28 @@ for: FOR controlSymbol VARIABLE FROM exp UNTIL exp STEP exp DO stmtlist END_FOR
 		control--;
 	 }
 ;
+
+switch: SWITCH controlSymbol cond CASE exp COLON stmtlist END_SWITCH
+	 {
+		$$ = new lp::SwitchStmt($3, $5, new lp::BlockStmt($7));
+
+		control--;
+	 }
+
+	| SWITCH controlSymbol cond CASE exp COLON stmtlist DEFAULT COLON stmtlist END_SWITCH
+	 {
+		$$ = new lp::SwitchStmt($3, $5, new lp::BlockStmt($7), new lp::BlockStmt($10));
+
+		control--;
+	 }
+;
+
+/* caselist: caselist CASE exp COLON stmtlist
+	 {
+
+	 }
+; */
+
 	/*  NEW in example 17 */
 cond: 	LPAREN exp RPAREN
 		{ 
