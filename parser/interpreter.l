@@ -63,7 +63,7 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 
 /* NEW in example 3 */
 /* STATE  */
-%x ERROR
+%x ERROR COMMENT
 
 /*! \name REGULAR EXPRESSIONS  */
 %%
@@ -169,6 +169,15 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 "("		{ return LPAREN; }
 ")"		{ return RPAREN; }
 
+!!.* 	{ }
+
+"<<" 	{ BEGIN(COMMENT); }
+
+<COMMENT>[^">>"] { }
+
+<COMMENT>">"|"<" { }
+
+<COMMENT>">>" { BEGIN(INITIAL); }
 
 <<EOF>> { /* The interpreter finishes when finds the end of file character */
 		/*  PLACE(24,10);
