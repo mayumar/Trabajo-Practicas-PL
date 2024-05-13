@@ -57,9 +57,11 @@ DIGIT  [0-9]
 
 CHAR   [a-zA-Z]
 
-NUMBER {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
+NUMBER {DIGIT}+(\.{DIGIT}+)?((E|e)[+\-]?{DIGIT}+)?
 
 IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
+
+STRING \'([^'\\]|\\.)*\'
 
 /* NEW in example 3 */
 /* STATE  */
@@ -146,6 +148,8 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 								return s->getToken();
 							}
                      }
+
+{STRING} {  }
 
 ":="    { return ASSIGNMENT; }
 
