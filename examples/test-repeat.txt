@@ -1,6 +1,6 @@
-leer(dato);
+LEER(dato);
 
-repetir
-    escribir dato;
+REPETIR
+    ESCRIBIR dato;
     dato := dato - 1;
-hasta (dato = 0);
+HASTA (dato = 0);

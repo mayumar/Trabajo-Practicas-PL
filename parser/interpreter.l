@@ -103,6 +103,9 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 						 /* NEW in example 7 */
 						 std::string identifier(yytext);
 
+						 for(int i = 0; identifier[i]; i++)
+						 	identifier[i] = tolower(identifier[i]);
+
 						/* 
                           strdup() function returns a pointer to a new string 
                           which  is a duplicate of the string yytext
