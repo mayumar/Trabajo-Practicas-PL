@@ -443,10 +443,10 @@ asgn:   VARIABLE ASSIGNMENT exp
 		}
 ;
 
-print:  PRINT exp 
+print:  PRINT LPAREN exp RPAREN
 		{
 			// Create a new print node
-			 $$ = new lp::PrintStmt($2);
+			 $$ = new lp::PrintStmt($3);
 		}
 ;	
 
