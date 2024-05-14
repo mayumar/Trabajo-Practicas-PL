@@ -658,7 +658,7 @@ double lp::PowerNode::evaluateNumber()
 
 void lp::ConcatNode::printAST() 
 {
-  std::cout << "ConcatNode: +"  << std::endl;
+  std::cout << "ConcatNode: ||"  << std::endl;
   std::cout << "\t"; 
 	this->_left->printAST();
 	std::cout << "\t"; 
