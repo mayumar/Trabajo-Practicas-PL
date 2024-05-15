@@ -431,12 +431,12 @@ switch: SWITCH controlSymbol LPAREN exp RPAREN caselist END_SWITCH
 		control--;
 	 }
 
-	| SWITCH controlSymbol LPAREN exp RPAREN CASE exp COLON stmtlist DEFAULT COLON stmtlist END_SWITCH
+	/* | SWITCH controlSymbol LPAREN exp RPAREN CASE exp COLON stmtlist DEFAULT COLON stmtlist END_SWITCH
 	 {
 		$$ = new lp::SwitchStmt($4, $7, new lp::BlockStmt($9), new lp::BlockStmt($12));
 
 		control--;
-	 }
+	 } */
 ;
 
 caselist: //Epsilon rule
