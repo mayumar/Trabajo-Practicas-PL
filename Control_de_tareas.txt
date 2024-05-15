@@ -122,10 +122,10 @@ OPERADORES:								[ ]
 		MAYOR O IGUAL QUE >=		[Y]
 		DISTINTO DE <>				[Y]
 
-	LÓGICOS								[ ]
-		DISYUNCIÓN #o				[ ]
-		CONJUNCIÓN #y				[ ]
-		NEGACIÓN   #no				[ ]
+	LÓGICOS								[Y]
+		DISYUNCIÓN #o				[Y]
+		CONJUNCIÓN #y				[Y]
+		NEGACIÓN   #no				[Y]
 
 										CONTROL		FECHA
 -------------------------------------------------------------------------------------
