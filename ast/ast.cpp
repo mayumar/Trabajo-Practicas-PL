@@ -241,9 +241,12 @@ void lp::StringNode::printAST()
 std::string lp::StringNode::evaluateString() 
 { 
 	std::string processedValue;
-	for (size_t i = 0; i < this->_string.length(); ++i) {
-		if (this->_string[i] == '\\' && i + 1 < this->_string.length()) {
-			switch (this->_string[i + 1]) {
+	for (size_t i = 0; i < this->_string.length(); ++i)
+	{
+		if (this->_string[i] == '\\' && i + 1 < this->_string.length())
+		{
+			switch (this->_string[i + 1])
+			{
 				case 'n':
 					processedValue += '\n';
 					++i; // Saltar el 'n' después de '\\'
@@ -260,7 +263,8 @@ std::string lp::StringNode::evaluateString()
 					processedValue += this->_string[i]; // Añadir el '\\' literal
 					break;
 			}
-		} else {
+		} else
+		{
 			processedValue += this->_string[i];
 		}
 	}
