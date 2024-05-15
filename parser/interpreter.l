@@ -181,6 +181,10 @@ STRING \'([^'\\]|\\.)*\'
 "("		{ return LPAREN; }
 ")"		{ return RPAREN; }
 
+"#y"	{ return AND; }
+"#o"	{ return OR; }
+"#no"	{ return NOT; }
+
 !!.* 	{ }
 
 "<<" 	{ BEGIN(COMMENT); }
