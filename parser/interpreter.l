@@ -38,6 +38,7 @@
 #include "../table/table.hpp"
 
 #include "../table/numericVariable.hpp"
+#include "../table/stringVariable.hpp"
 
 extern lp::Table table; //!< External Table of Symbols
 /*********************************************/
@@ -57,13 +58,15 @@ DIGIT  [0-9]
 
 CHAR   [a-zA-Z]
 
-NUMBER {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
+NUMBER {DIGIT}+(\.{DIGIT}+)?((E|e)[+\-]?{DIGIT}+)?
 
 IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 
+STRING \'([^'\\]|\\.)*\'
+
 /* NEW in example 3 */
 /* STATE  */
-%x ERROR
+%x ERROR COMMENT
 
 /*! \name REGULAR EXPRESSIONS  */
 %%
@@ -91,17 +94,29 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 		}
 
 {NUMBER}  			  {
-					  /* MODIFIED in example 4 */
-					  /* Conversion of type and sending of the numerical value to the parser */
-					   yylval.number = atof(yytext); 
+						/* MODIFIED in example 4 */
+						/* Conversion of type and sending of the numerical value to the parser */
+						yylval.number = atof(yytext); 
 
-                       return NUMBER; 
+						return NUMBER; 
                       }
 
+{STRING} 			  {
+						/* Remove quotation marks */
+						yytext[yyleng-1] = '\0';
+						yytext++;
+						yyleng--;
+
+						yylval.string = yytext;
+						return STRING;
+					  }
 
 {IDENTIFIER}   		 {
 						 /* NEW in example 7 */
 						 std::string identifier(yytext);
+
+						 for(int i = 0; identifier[i]; i++)
+						 	identifier[i] = tolower(identifier[i]);
 
 						/* 
                           strdup() function returns a pointer to a new string 
@@ -154,7 +169,7 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 "%"     { return MODULE; }
 "**"    { return POWER; }
  
-"||"    { /* return CONCAT; */ }
+"||"    { return CONCAT; }
 
 "<"		{ return LESS_THAN; }
 "<="	{ return LESS_OR_EQUAL; }
@@ -168,6 +183,15 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 
 ":"		{ return COLON; }
 
+!!.* 	{ }
+
+"<<" 	{ BEGIN(COMMENT); }
+
+<COMMENT>[^">>"] { }
+
+<COMMENT>">"|"<" { }
+
+<COMMENT>">>" { BEGIN(INITIAL); }
 
 <<EOF>> { /* The interpreter finishes when finds the end of file character */
 		/*  PLACE(24,10);
@@ -203,7 +227,7 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 									yymore(); 
 								}
 
-<ERROR>(.|\n)                { 
+<ERROR>(.|\n)               { 
 								/* NEW in example 3 */
 								/* Rewind one position */
 								yyless(yyleng-1); 

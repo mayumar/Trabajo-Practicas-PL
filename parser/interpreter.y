@@ -47,6 +47,10 @@
 #include "../table/numericVariable.hpp"
 /*******************************************/
 
+/*******************************************/
+#include "../table/stringVariable.hpp"
+/*******************************************/
+
 /* NEW in example 15 */
 #include "../table/logicalVariable.hpp"
 
@@ -160,7 +164,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %type <stmts> stmtlist
 
 // New in example 17: if, while, block
-%type <st> stmt asgn print read if while repeat for switch block
+%type <st> stmt asgn print read read_string if while repeat for switch block
 
 %type <prog> program
 
@@ -197,7 +201,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 /*******************************************/
 
 /* MODIFIED in examples 11, 13 */
-%token <string> VARIABLE UNDEFINED CONSTANT BUILTIN
+%token <string> VARIABLE STRING UNDEFINED CONSTANT BUILTIN
 
 /* Left associativity */
 
@@ -216,7 +220,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %left PLUS MINUS 
 
 /* MODIFIED in example 5 */
-%left MULTIPLICATION DIVISION INT_DIVISION MODULE
+%left MULTIPLICATION DIVISION INT_DIVISION MODULE CONCAT
 
 %left LPAREN RPAREN
 
@@ -301,6 +305,11 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		// $$ = $1;
 	  }
 	| read SEMICOLON
+	  {
+		// Default action
+		// $$ = $1;
+	  }
+	| read_string SEMICOLON
 	  {
 		// Default action
 		// $$ = $1;
@@ -474,10 +483,10 @@ asgn:   VARIABLE ASSIGNMENT exp
 		}
 ;
 
-print:  PRINT exp 
+print:  PRINT LPAREN exp RPAREN
 		{
 			// Create a new print node
-			 $$ = new lp::PrintStmt($2);
+			 $$ = new lp::PrintStmt($3);
 		}
 ;	
 
@@ -494,6 +503,18 @@ read:  READ LPAREN VARIABLE RPAREN
 		}
 ;
 
+read_string:  READ_STRING LPAREN VARIABLE RPAREN  
+		{
+			// Create a new read_string node
+			 $$ = new lp::ReadStringStmt($3);
+		}
+
+  	  /* NEW rule in example 11 */
+	| READ_STRING LPAREN CONSTANT RPAREN  
+		{   
+ 			execerror("Semantic error in \"read_string statement\": it is not allowed to modify a constant ",$3);
+		}
+;
 
 exp:	NUMBER 
 		{ 
@@ -530,6 +551,11 @@ exp:	NUMBER
 			$$ = new lp::IntDivisionNode($1, $3);
 		}
 
+	|	exp CONCAT exp
+		{
+			$$ = new lp::ConcatNode($1, $3);
+		}
+
 	| 	LPAREN exp RPAREN
        	{ 
 		    // just copy up the expression node 
@@ -553,7 +579,7 @@ exp:	NUMBER
 		  // Create a new modulo node	
 
 		  $$ = new lp::ModuloNode($1, $3);
-       }
+		}
 
 	|	exp POWER exp 
      	{ 
@@ -561,20 +587,24 @@ exp:	NUMBER
   		  $$ = new lp::PowerNode($1, $3);
 		}
 
-	 | VARIABLE
+	 |	VARIABLE
 		{
 		  // Create a new variable node	
 		  $$ = new lp::VariableNode($1);
 		}
 
-	 | CONSTANT
+	| 	STRING
+		{
+		  $$ = new lp::StringNode($1);
+		}
+
+	| 	CONSTANT
 		{
 		  // Create a new constant node	
 		  $$ = new lp::ConstantNode($1);
-
 		}
 
-	| BUILTIN LPAREN listOfExp RPAREN
+	| 	BUILTIN LPAREN listOfExp RPAREN
 		{
 			// Get the identifier in the table of symbols as Builtin
 			lp::Builtin *f= (lp::Builtin *) table.getSymbol($1);

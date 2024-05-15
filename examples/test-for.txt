@@ -1,4 +1,4 @@
-leer(init);
+leer(init1_for);
 leer(end);
 
 para i desde init hasta end hacer

@@ -26,6 +26,7 @@
 
 // 
 #include "../table/numericVariable.hpp"
+#include "../table/stringVariable.hpp"
 #include "../table/logicalVariable.hpp"
 
 #include "../table/numericConstant.hpp"
@@ -90,6 +91,27 @@ double lp::VariableNode::evaluateNumber()
 	}
 
 	// Return the value of the NumericVariable
+	return result;
+}
+
+std::string lp::VariableNode::evaluateString()
+{
+	std::string result = "";
+
+	if (this->getType() == STRING)
+	{
+		// Get the identifier in the table of symbols as StringVariable
+		lp::StringVariable *var = (lp::StringVariable *) table.getSymbol(this->_id);
+
+		// Copy the value of the StringVariable
+		result = var->getValue();
+	}
+	else
+	{
+		warning("Runtime error in evaluateString(): the variable is not a string", this->_id);
+	}
+
+	// Return the value of the StringVariable
 	return result;
 }
 
@@ -204,6 +226,26 @@ double lp::NumberNode::evaluateNumber()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+int lp::StringNode::getType()
+{
+	return STRING;
+}
+
+
+void lp::StringNode::printAST()
+{
+  std::cout << "StringNode: " << this->_string << std::endl;
+}
+
+std::string lp::StringNode::evaluateString() 
+{ 
+    return this->_string; 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 int lp::NumericUnaryOperatorNode::getType()
 {
 	int result;
@@ -251,6 +293,21 @@ int lp::NumericOperatorNode::getType()
 		result = NUMBER;
 	else
 		warning("Runtime error: incompatible types for", "Numeric Operator");
+
+	return	result;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+int lp::StringOperatorNode::getType()
+{
+	int result = 0;
+		
+	if ((this->_left->getType() == STRING || this->_left->getType() == NUMBER) and (this->_right->getType() == STRING || this->_left->getType() == NUMBER))
+		result = STRING;
+	else
+		warning("Runtime error: incompatible types for", "String Operator");
 
 	return	result;
 }
@@ -591,6 +648,35 @@ double lp::PowerNode::evaluateNumber()
 	else
 	{
 		warning("Runtime error: the expressions are not numeric for", "Power");
+	}
+
+  return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::ConcatNode::printAST() 
+{
+  std::cout << "ConcatNode: ||"  << std::endl;
+  std::cout << "\t"; 
+	this->_left->printAST();
+	std::cout << "\t"; 
+	this->_right->printAST();
+}
+
+std::string lp::ConcatNode::evaluateString()
+{
+	std::string result = "";
+
+	// Ckeck the types of the expressions
+	if (this->getType() == STRING)
+	{
+		result = this->_left->evaluateString() + this->_right->evaluateString();
+	}
+	else
+	{
+		warning("Runtime error: the expressions are not strings for ", "Concat");
 	}
 
   return result;
@@ -1063,9 +1149,9 @@ void lp::AssignmentStmt::printAST()
   // Check the expression
 	if (this->_exp != NULL)
 	{
-	  this->_exp->printAST();
-    std::cout << std::endl;
-  }
+		this->_exp->printAST();
+    	std::cout << std::endl;
+  	}
   // this->_asgn is not NULL: multiple assingment
   else 
     this->_asgn->printAST();
@@ -1144,6 +1230,34 @@ void lp::AssignmentStmt::evaluate()
 					// with the type BOOL and the value 
 					lp::LogicalVariable *v = new lp::LogicalVariable(this->_id,
 											VARIABLE,BOOL,value);
+					table.installSymbol(v);
+				}
+			}
+			break;
+
+			case STRING:
+			{
+				std::string value;
+				// evaluate the expression as STRING
+			 	value = this->_exp->evaluateString();
+
+				if (firstVar->getType() == STRING)
+				{
+				  	// Get the identifier in the table of symbols as StringVariable
+					lp::StringVariable *v = (lp::StringVariable *) table.getSymbol(this->_id);
+					// Assignment the value to the identifier in the table of symbols
+					v->setValue(value);
+				}
+				// The type of variable is not STRING
+				else
+				{
+					// Delete the variable from the table of symbols 
+					table.eraseSymbol(this->_id);
+
+					// Insert the variable in the table of symbols as NumericVariable 
+					// with the type STRING and the value 
+					lp::StringVariable *v = new lp::StringVariable(this->_id,
+											VARIABLE,STRING,value);
 					table.installSymbol(v);
 				}
 			}
@@ -1233,6 +1347,36 @@ void lp::AssignmentStmt::evaluate()
 			}
 			break;
 
+			case STRING:
+			{
+				/* Get the identifier of the previous asgn in the table of symbols as StringVariable */
+				lp::StringVariable *secondVar = (lp::StringVariable *) table.getSymbol(this->_asgn->_id);
+				// Check the type of the first variable
+				if (firstVar->getType() == STRING)
+				{
+					/* Get the identifier of the first variable in the table of symbols as StringVariable */
+					lp::StringVariable *firstVar = (lp::StringVariable *) table.getSymbol(this->_id);
+				  	// Get the identifier o f the in the table of symbols as NumericVariable
+					// lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol(this->_id);
+
+					// Assignment the value of the second variable to the first variable
+					firstVar->setValue(secondVar->getValue());
+				}
+				// The type of variable is not STRING
+				else
+				{
+					// Delete the first variable from the table of symbols 
+					table.eraseSymbol(this->_id);
+
+					// Insert the first variable in the table of symbols as NumericVariable 
+					// with the type STRING and the value of the previous variable 
+					lp::StringVariable *firstVar = new lp::StringVariable(this->_id,
+											VARIABLE,STRING,secondVar->getValue());
+					table.installSymbol(firstVar);
+				}
+			}
+			break;
+
 			default:
 				warning("Runtime error: incompatible type of expression for ", "Assigment");
 		}
@@ -1269,6 +1413,9 @@ void lp::PrintStmt::evaluate()
 			else
 				std::cout << "false" << std::endl;
 		
+			break;
+		case STRING:
+			std::cout << this->_exp->evaluateString() << std::endl;
 			break;
 
 		default:
@@ -1324,6 +1471,52 @@ void lp::ReadStmt::evaluate()
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::ReadStringStmt::printAST() 
+{
+  std::cout << "ReadStringStmt: read"  << std::endl;
+  std::cout << "\t";
+  std::cout << this->_id;
+  std::cout << std::endl;
+}
+
+
+void lp::ReadStringStmt::evaluate() 
+{   
+	std::string value;
+	std::cout << BIYELLOW; 
+	std::cout << "Insert a alphanumeric value --> " ;
+	std::cout << RESET; 
+	std::cin >> value;
+
+	/* Get the identifier in the table of symbols as Variable */
+	lp::Variable *var = (lp::Variable *) table.getSymbol(this->_id);
+
+	// Check if the type of the variable is STRING
+	if (var->getType() == STRING)
+	{
+		/* Get the identifier in the table of symbols as StringVariable */
+		lp::StringVariable *n = (lp::StringVariable *) table.getSymbol(this->_id);
+						
+		/* Assignment the read value to the identifier */
+		n->setValue(value);
+	}
+	// The type of variable is not STRING
+	else
+	{
+		// Delete $1 from the table of symbols as Variable
+		table.eraseSymbol(this->_id);
+
+			// Insert $1 in the table of symbols as StringVariable 
+		// with the type STRING and the read value 
+		lp::StringVariable *n = new lp::StringVariable(this->_id, 
+									  VARIABLE,STRING,value);
+
+		table.installSymbol(n);
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

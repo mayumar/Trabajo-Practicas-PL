@@ -1,6 +1,6 @@
 leer(dato);
 
-escribir dato;
+escribir(dato);
 
 si (dato < 0) entonces
     f := 0;
@@ -9,4 +9,4 @@ si (dato < 0) entonces
     f := 1;
 fin_si;
 
-escribir f; 
+escribir(f); 
