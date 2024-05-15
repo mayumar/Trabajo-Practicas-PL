@@ -1,0 +1,7 @@
+leer(c);
+
+casos(c)
+    valor 1: escribir 1;
+    valor 2: escribir 2;
+    valor 3: escribir 3;
+fin_casos;

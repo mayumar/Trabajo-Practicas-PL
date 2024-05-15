@@ -1821,8 +1821,7 @@ class SwitchStmt : public Statement
 {
 	private:
 		ExpNode *_cond;
-		ExpNode *_caseExp;
-		Statement *_caseStmt;
+		Statement *_cases;
 		Statement *_defaultStmt;
 	
 	public:
@@ -1833,11 +1832,10 @@ class SwitchStmt : public Statement
 		\param caseStatement: CASE statemente of the switch
 		\post  A new SwitchStmt is created with the parameters
 	*/
-	SwitchStmt(ExpNode *condition, ExpNode *caseExpresssion, Statement *caseStatement)
+	SwitchStmt(ExpNode *condition, Statement *cases)
 	{
 		this->_cond = condition;
-		this->_caseExp = caseExpresssion;
-		this->_caseStmt = caseStatement;
+		this->_cases = cases;
 		this->_defaultStmt = NULL;
 	}
 
@@ -1852,8 +1850,8 @@ class SwitchStmt : public Statement
 	SwitchStmt(ExpNode *condition, ExpNode *caseExpresssion, Statement *caseStatement, Statement *defaultStatement)
 	{
 		this->_cond = condition;
-		this->_caseExp = caseExpresssion;
-		this->_caseStmt = caseStatement;
+		// this->_caseExp = caseExpresssion;
+		// this->_caseStmt = caseStatement;
 		this->_defaultStmt = defaultStatement;
 	}
 
@@ -1870,6 +1868,99 @@ class SwitchStmt : public Statement
 		\sa	   	 printAST
 	*/
 	void evaluate();
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class CaseStmt
+  \brief Definition of atributes and methods of CaseStmt class
+  \note  CaseStmt Class publicly inherits from Statement class
+*/
+class CaseStmt : public Statement 
+{
+ private: 	
+   ExpNode * _expression; //expression of the CaseStmt
+   Statement * _statements; //statements of the CaseStmt
+ 
+ public:
+
+/*!		
+	\brief Constructor of CaseStmt
+	\param exp: pointer to ExpNode
+	\param stmt: pointer to Statement
+	\post  A new CaseStmt is created with the value of the parameter
+	\note  Inline function
+*/
+  CaseStmt(ExpNode *exp, Statement *stmt)
+	{
+	    this->_expression = exp;
+		this->_statements = stmt;
+	}
+
+	ExpNode * getExp(){
+		return _expression;
+	}
+
+	/*!
+		\brief   Print the AST for expression
+		\return  void
+		\sa		   evaluateBool
+	*/
+	void printAST();
+
+	/*!	
+		\brief   Evaluate the expression
+		\return  bool
+		\sa		   printAST
+	*/
+	void evaluate();
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   BlockCaseStmt
+  \brief   Definition of atributes and methods of BlockCaseStmt class
+  \note    BlockCaseStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
+class BlockCaseStmt : public Statement
+{
+	private:
+
+		ExpNode *_exp;
+		std::list<CaseStmt *> *_cases;
+
+	public:
+	/*!		
+		\brief Constructor of  BlockStmt
+		\param exp: expression for the switch
+		\param cases: list of CaseStmt
+		\post  A new BlockStmt is created with the parameters
+	*/
+		BlockCaseStmt(ExpNode *exp, std::list<CaseStmt *> *cases)
+		{
+			this->_exp = exp;
+			this->_cases = cases;
+		}
+	
+	/*!
+		\brief   Print the AST for BlockCaseStmt
+		\return  void
+		\sa		   evaluate
+	*/
+	void printAST();
+
+	/*!	
+		\brief   Evaluate the BlockCaseStmt
+		\return  void
+		\sa	   	 printAST
+	*/
+	void evaluate();
+
 };
 
 
@@ -1890,7 +1981,7 @@ class BlockStmt : public Statement
 
   public:
 /*!		
-	\brief Constructor of  WhileStmt
+	\brief Constructor of  BlockStmt
 	\param stmtList: list of Statement
 	\post  A new BlockStmt is created with the parameters
 */
@@ -1914,7 +2005,6 @@ class BlockStmt : public Statement
 */
   void evaluate();
 };
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

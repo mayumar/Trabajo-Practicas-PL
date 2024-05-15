@@ -1498,15 +1498,10 @@ void lp::SwitchStmt::printAST(){
 	std::cout << "\t";
 	this->_cond->printAST();
 
-	// Expresion del case
+	//Cases
 	std::cout << "\t";
-	this->_caseExp->printAST();
+	this->_cases->printAST();
 
-	// Statements del case
-	std::cout << "\t";
-	this->_caseStmt->printAST();
-
-	// Expresion del default
 	if (this->_defaultStmt != NULL)
 	{
 		//Staments del default
@@ -1519,15 +1514,34 @@ void lp::SwitchStmt::printAST(){
 
 void lp::SwitchStmt::evaluate(){
 	double value = this->_cond->evaluateNumber();
-	double caseNumber = this->_caseExp->evaluateNumber();
+	
+	this->_cases->evaluate();
+}
 
-	if(value == caseNumber)
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::BlockCaseStmt::printAST()
+{
+	std::list<CaseStmt *>::iterator it;
+
+	std::cout << "BlockCaseStmt: "  << std::endl;
+
+	for (it = this->_cases->begin(); it != this->_cases->end(); it++) 
 	{
-		this->_caseStmt->evaluate();
+		(*it)->printAST();
 	}
-	else if(this->_defaultStmt != NULL)
+}
+
+void lp::BlockCaseStmt::evaluate()
+{
+	std::list<CaseStmt *>::iterator it;
+
+	for (it = this->_cases->begin(); it != this->_cases->end(); it++) 
 	{
-		this->_defaultStmt->evaluate();
+		if((*it)->getExp()->evaluateNumber() == this->_exp->evaluateNumber()){
+			(*it)->evaluate();
+		}
 	}
 }
 
@@ -1558,7 +1572,20 @@ void lp::BlockStmt::evaluate()
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
+void lp::CaseStmt::printAST()
+{
+	this->_expression->printAST();
+	std::cout << "\t";
+	this->_statements->printAST();
+}
+
+void lp::CaseStmt::evaluate()
+{
+	this->_statements->evaluate();
+}
 
 
 

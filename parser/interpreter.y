@@ -146,7 +146,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
   std::list<lp::ExpNode *>  *parameters;    // New in example 16; NOTE: #include<list> must be in interpreter.l, init.cpp, interpreter.cpp
   std::list<lp::Statement *> *stmts; /* NEW in example 16 */
   lp::Statement *st;				 /* NEW in example 16 */
-  lp::AST *prog;					 /* NEW in example 16 */
+  std::list<lp::CaseStmt *> *cases;
+  lp::AST *prog;			
 }
 
 /* Type of the non-terminal symbols */
@@ -162,6 +163,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %type <st> stmt asgn print read if while repeat for switch block
 
 %type <prog> program
+
+%type <cases> caselist
 
 /* Defined tokens */
 
@@ -411,26 +414,33 @@ for: FOR controlSymbol VARIABLE FROM exp UNTIL exp STEP exp DO stmtlist END_FOR
 	 }
 ;
 
-switch: SWITCH controlSymbol cond CASE exp COLON stmtlist END_SWITCH
+switch: SWITCH controlSymbol LPAREN exp RPAREN caselist END_SWITCH
 	 {
-		$$ = new lp::SwitchStmt($3, $5, new lp::BlockStmt($7));
+		$$ = new lp::BlockCaseStmt($4, $6);
+		//$$ = new lp::SwitchStmt($4, new lp::BlockCaseStmt($6));
 
 		control--;
 	 }
 
-	| SWITCH controlSymbol cond CASE exp COLON stmtlist DEFAULT COLON stmtlist END_SWITCH
+	| SWITCH controlSymbol LPAREN exp RPAREN CASE exp COLON stmtlist DEFAULT COLON stmtlist END_SWITCH
 	 {
-		$$ = new lp::SwitchStmt($3, $5, new lp::BlockStmt($7), new lp::BlockStmt($10));
+		$$ = new lp::SwitchStmt($4, $7, new lp::BlockStmt($9), new lp::BlockStmt($12));
 
 		control--;
 	 }
 ;
 
-/* caselist: caselist CASE exp COLON stmtlist
+caselist: //Epsilon rule
 	 {
-
+		$$ = new std::list<lp::CaseStmt *>();
 	 }
-; */
+	 
+	| caselist CASE exp COLON stmtlist
+	 {
+		$$ = $1;
+		$$->push_back(new lp::CaseStmt($3, new lp::BlockStmt($5)));
+	 }
+;
 
 	/*  NEW in example 17 */
 cond: 	LPAREN exp RPAREN
