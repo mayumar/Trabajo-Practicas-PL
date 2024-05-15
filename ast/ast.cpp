@@ -1685,56 +1685,53 @@ void lp::ForStmt::evaluate()
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void lp::SwitchStmt::printAST(){
-	std::cout << "SwitchStmt: "  << std::endl;
-	// Condicion
+void lp::CaseStmt::printAST()
+{
+	this->_expression->printAST();
 	std::cout << "\t";
-	this->_cond->printAST();
-
-	//Cases
-	std::cout << "\t";
-	this->_cases->printAST();
-
-	if (this->_defaultStmt != NULL)
-	{
-		//Staments del default
-		std::cout << "\t";
-		this->_defaultStmt->printAST();
-	}
-
-	std::cout << std::endl;
+	this->_statements->printAST();
 }
 
-void lp::SwitchStmt::evaluate(){
-	double value = this->_cond->evaluateNumber();
-	
-	this->_cases->evaluate();
+void lp::CaseStmt::evaluate()
+{
+	this->_statements->evaluate();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void lp::BlockCaseStmt::printAST()
+void lp::SwitchStmt::printAST()
 {
 	std::list<CaseStmt *>::iterator it;
 
-	std::cout << "BlockCaseStmt: "  << std::endl;
+	std::cout << "SwitchStmt: "  << std::endl;
 
 	for (it = this->_cases->begin(); it != this->_cases->end(); it++) 
 	{
 		(*it)->printAST();
 	}
+
+	if(this->_defaultStmt != NULL){
+		this->_defaultStmt->printAST();
+	}
+	
 }
 
-void lp::BlockCaseStmt::evaluate()
+void lp::SwitchStmt::evaluate()
 {
 	std::list<CaseStmt *>::iterator it;
+	bool flag = false;
 
 	for (it = this->_cases->begin(); it != this->_cases->end(); it++) 
 	{
 		if((*it)->getExp()->evaluateNumber() == this->_exp->evaluateNumber()){
 			(*it)->evaluate();
+			flag = true;
 		}
+	}
+
+	if(!flag && this->_defaultStmt != NULL){
+		this->_defaultStmt->evaluate();
 	}
 }
 
@@ -1764,23 +1761,6 @@ void lp::BlockStmt::evaluate()
     (*stmtIter)->evaluate();
   }
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-void lp::CaseStmt::printAST()
-{
-	this->_expression->printAST();
-	std::cout << "\t";
-	this->_statements->printAST();
-}
-
-void lp::CaseStmt::evaluate()
-{
-	this->_statements->evaluate();
-}
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

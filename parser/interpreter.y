@@ -425,18 +425,17 @@ for: FOR controlSymbol VARIABLE FROM exp UNTIL exp STEP exp DO stmtlist END_FOR
 
 switch: SWITCH controlSymbol LPAREN exp RPAREN caselist END_SWITCH
 	 {
-		$$ = new lp::BlockCaseStmt($4, $6);
-		//$$ = new lp::SwitchStmt($4, new lp::BlockCaseStmt($6));
+		$$ = new lp::SwitchStmt($4, $6);
 
 		control--;
 	 }
 
-	/* | SWITCH controlSymbol LPAREN exp RPAREN CASE exp COLON stmtlist DEFAULT COLON stmtlist END_SWITCH
+	| SWITCH controlSymbol LPAREN exp RPAREN caselist DEFAULT COLON stmtlist END_SWITCH
 	 {
-		$$ = new lp::SwitchStmt($4, $7, new lp::BlockStmt($9), new lp::BlockStmt($12));
+		$$ = new lp::SwitchStmt($4, $6, new lp::BlockStmt($9));
 
 		control--;
-	 } */
+	 }
 ;
 
 caselist: //Epsilon rule
