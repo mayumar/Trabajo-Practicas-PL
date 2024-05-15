@@ -76,7 +76,7 @@ IDENTIFICADORES:						[Y]
 
 											CONTROL		FECHA
 -------------------------------------------------------------------------------------
-NÚMERO:										[ ]	
+NÚMERO:										[Y]	
 -------------------------------------------------------------------------------------
 	ENTEROS 							[Y]
 	REALES DE PUNTO FIJO				[Y]
@@ -86,13 +86,13 @@ NÚMERO:										[ ]
 
 											CONTROL		FECHA
 -------------------------------------------------------------------------------------
-CADENA:										[ ]		
+CADENA:										[Y]		
 -------------------------------------------------------------------------------------
 	CARACTERES DELIMITADOS POR COMILLAS SIMPLES 	[Y]
-	INCLUYE COMILLA SIMPLE CON  \'					[ ]
+	INCLUYE COMILLA SIMPLE CON  \'					[Y]
 	COMILLAS EXTERIORES NO SON PARTE DE LA CADENA 	[Y]
 
-	INTERPRETA \n  \t  \'							[ ]
+	INTERPRETA \n  \t  \'							[Y]
 
 										CONTROL		FECHA
 -------------------------------------------------------------------------------------

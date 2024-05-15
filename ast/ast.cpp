@@ -1724,9 +1724,31 @@ void lp::SwitchStmt::evaluate()
 
 	for (it = this->_cases->begin(); it != this->_cases->end(); it++) 
 	{
-		if((*it)->getExp()->evaluateNumber() == this->_exp->evaluateNumber()){
-			(*it)->evaluate();
-			flag = true;
+		switch((*it)->getExp()->getType())
+		{
+			case NUMBER:
+				if((*it)->getExp()->evaluateNumber() == this->_exp->evaluateNumber())
+				{
+					(*it)->evaluate();
+					flag = true;
+				}
+			break;
+
+			case STRING:
+				if((*it)->getExp()->evaluateString() == this->_exp->evaluateString())
+				{
+					(*it)->evaluate();
+					flag = true;
+				}
+			break;
+
+			case BOOL:
+				if((*it)->getExp()->evaluateBool() == this->_exp->evaluateBool())
+				{
+					(*it)->evaluate();
+					flag = true;
+				}
+			break;
 		}
 	}
 
