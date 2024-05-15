@@ -68,11 +68,7 @@
         "cfenv": "cpp",
         "cinttypes": "cpp",
         "typeindex": "cpp",
-<<<<<<< HEAD
-        "variant": "cpp"
-=======
         "variant": "cpp",
         "*.ipp": "cpp"
->>>>>>> origin/dev1
     }
 }
