@@ -240,7 +240,31 @@ void lp::StringNode::printAST()
 
 std::string lp::StringNode::evaluateString() 
 { 
-    return this->_string; 
+	std::string processedValue;
+	for (size_t i = 0; i < this->_string.length(); ++i) {
+		if (this->_string[i] == '\\' && i + 1 < this->_string.length()) {
+			switch (this->_string[i + 1]) {
+				case 'n':
+					processedValue += '\n';
+					++i; // Saltar el 'n' después de '\\'
+					break;
+				case '\'':
+					processedValue += '\'';
+					++i; // Saltar el '\'' después de '\\'
+					break;
+				case 't':
+					processedValue += '\t';
+					++i; // Saltar el 't' después de '\\'
+					break;
+				default:
+					processedValue += this->_string[i]; // Añadir el '\\' literal
+					break;
+			}
+		} else {
+			processedValue += this->_string[i];
+		}
+	}
+    return processedValue; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1398,26 +1422,25 @@ void lp::PrintStmt::printAST()
 
 void lp::PrintStmt::evaluate() 
 {
-	std::cout << BIYELLOW; 
-	std::cout << "print: ";
-	std::cout << RESET; 
+	// std::cout << BIYELLOW; 
+	// std::cout << "print: ";
+	// std::cout << RESET; 
 
 	switch(this->_exp->getType())
 	{
 		case NUMBER:
-				std::cout << this->_exp->evaluateNumber() << std::endl;
+				std::cout << this->_exp->evaluateNumber();
 				break;
 		case BOOL:
 			if (this->_exp->evaluateBool())
-				std::cout << "true" << std::endl;
+				std::cout << "verdadero";
 			else
-				std::cout << "false" << std::endl;
+				std::cout << "falso";
 		
 			break;
 		case STRING:
-			std::cout << this->_exp->evaluateString() << std::endl;
+			std::cout << this->_exp->evaluateString();
 			break;
-
 		default:
 			warning("Runtime error: incompatible type for ", "print");
 	}
@@ -1439,9 +1462,9 @@ void lp::ReadStmt::printAST()
 void lp::ReadStmt::evaluate() 
 {   
 	double value;
-	std::cout << BIYELLOW; 
-	std::cout << "Insert a numeric value --> " ;
-	std::cout << RESET; 
+	// std::cout << BIYELLOW; 
+	// std::cout << "Insert a numeric value --> " ;
+	// std::cout << RESET; 
 	std::cin >> value;
 
 	/* Get the identifier in the table of symbols as Variable */
@@ -1486,9 +1509,9 @@ void lp::ReadStringStmt::printAST()
 void lp::ReadStringStmt::evaluate() 
 {   
 	std::string value;
-	std::cout << BIYELLOW; 
-	std::cout << "Insert a alphanumeric value --> " ;
-	std::cout << RESET; 
+	// std::cout << BIYELLOW; 
+	// std::cout << "Insert a alphanumeric value --> " ;
+	// std::cout << RESET; 
 	std::cin >> value;
 
 	/* Get the identifier in the table of symbols as Variable */
