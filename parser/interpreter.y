@@ -150,7 +150,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
   std::list<lp::ExpNode *>  *parameters;    // New in example 16; NOTE: #include<list> must be in interpreter.l, init.cpp, interpreter.cpp
   std::list<lp::Statement *> *stmts; /* NEW in example 16 */
   lp::Statement *st;				 /* NEW in example 16 */
-  lp::AST *prog;					 /* NEW in example 16 */
+  std::list<lp::CaseStmt *> *cases;
+  lp::AST *prog;			
 }
 
 /* Type of the non-terminal symbols */
@@ -163,9 +164,11 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %type <stmts> stmtlist
 
 // New in example 17: if, while, block
-%type <st> stmt asgn print read read_string if while repeat for block
+%type <st> stmt asgn print read read_string if while repeat for switch
 
 %type <prog> program
+
+%type <cases> caselist
 
 /* Defined tokens */
 
@@ -184,6 +187,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 /* NEW in example 14 */
 %token COMMA
+
+%token COLON
 
 /*******************************************/
 /* MODIFIED in example 4 */
@@ -333,20 +338,12 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		// Default action
 		// $$ = $1;
 	 }
-	/*  NEW in example 17 */
-	| block 
+	/* Switch statement */
+	| switch SEMICOLON
 	 {
 		// Default action
 		// $$ = $1;
 	 }
-;
-
-
-block: THEN stmtlist  
-		{
-			// Create a new block of statements node
-			$$ = new lp::BlockStmt($2); 
-		}
 ;
 
 controlSymbol:  /* Epsilon rule*/
@@ -411,6 +408,34 @@ for: FOR controlSymbol VARIABLE FROM exp UNTIL exp STEP exp DO stmtlist END_FOR
 		control--;
 	 }
 ;
+
+switch: SWITCH controlSymbol LPAREN exp RPAREN caselist END_SWITCH
+	 {
+		$$ = new lp::SwitchStmt($4, $6);
+
+		control--;
+	 }
+
+	| SWITCH controlSymbol LPAREN exp RPAREN caselist DEFAULT COLON stmtlist END_SWITCH
+	 {
+		$$ = new lp::SwitchStmt($4, $6, new lp::BlockStmt($9));
+
+		control--;
+	 }
+;
+
+caselist: //Epsilon rule
+	 {
+		$$ = new std::list<lp::CaseStmt *>();
+	 }
+	 
+	| caselist CASE exp COLON stmtlist
+	 {
+		$$ = $1;
+		$$->push_back(new lp::CaseStmt($3, new lp::BlockStmt($5)));
+	 }
+;
+
 	/*  NEW in example 17 */
 cond: 	LPAREN exp RPAREN
 		{ 

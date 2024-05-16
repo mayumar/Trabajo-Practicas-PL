@@ -1711,6 +1711,81 @@ void lp::ForStmt::evaluate()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::CaseStmt::printAST()
+{
+	this->_expression->printAST();
+	std::cout << "\t";
+	this->_statements->printAST();
+}
+
+void lp::CaseStmt::evaluate()
+{
+	this->_statements->evaluate();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::SwitchStmt::printAST()
+{
+	std::list<CaseStmt *>::iterator it;
+
+	std::cout << "SwitchStmt: "  << std::endl;
+
+	for (it = this->_cases->begin(); it != this->_cases->end(); it++) 
+	{
+		(*it)->printAST();
+	}
+
+	if(this->_defaultStmt != NULL){
+		this->_defaultStmt->printAST();
+	}
+	
+}
+
+void lp::SwitchStmt::evaluate()
+{
+	std::list<CaseStmt *>::iterator it;
+	bool flag = false;
+
+	for (it = this->_cases->begin(); it != this->_cases->end(); it++) 
+	{
+		switch((*it)->getExp()->getType())
+		{
+			case NUMBER:
+				if((*it)->getExp()->evaluateNumber() == this->_exp->evaluateNumber())
+				{
+					(*it)->evaluate();
+					flag = true;
+				}
+			break;
+
+			case STRING:
+				if((*it)->getExp()->evaluateString() == this->_exp->evaluateString())
+				{
+					(*it)->evaluate();
+					flag = true;
+				}
+			break;
+
+			case BOOL:
+				if((*it)->getExp()->evaluateBool() == this->_exp->evaluateBool())
+				{
+					(*it)->evaluate();
+					flag = true;
+				}
+			break;
+		}
+	}
+
+	if(!flag && this->_defaultStmt != NULL){
+		this->_defaultStmt->evaluate();
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 // NEW in example 17
 
 void lp::BlockStmt::printAST() 
@@ -1735,10 +1810,6 @@ void lp::BlockStmt::evaluate()
     (*stmtIter)->evaluate();
   }
 }
-
-
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

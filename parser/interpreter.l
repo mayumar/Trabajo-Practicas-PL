@@ -181,6 +181,8 @@ STRING \'([^'\\]|\\.)*\'
 "("		{ return LPAREN; }
 ")"		{ return RPAREN; }
 
+":"		{ return COLON; }
+
 "#y"	{ return AND; }
 "#o"	{ return OR; }
 "#no"	{ return NOT; }
