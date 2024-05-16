@@ -164,7 +164,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %type <stmts> stmtlist
 
 // New in example 17: if, while, block
-%type <st> stmt asgn print read read_string if while repeat for switch block
+%type <st> stmt asgn print read read_string if while repeat for switch
 
 %type <prog> program
 
@@ -344,20 +344,6 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		// Default action
 		// $$ = $1;
 	 }
-	/*  NEW in example 17 */
-	| block 
-	 {
-		// Default action
-		// $$ = $1;
-	 }
-;
-
-
-block: THEN stmtlist  
-		{
-			// Create a new block of statements node
-			$$ = new lp::BlockStmt($2); 
-		}
 ;
 
 controlSymbol:  /* Epsilon rule*/
