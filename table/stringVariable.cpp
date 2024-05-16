@@ -1,5 +1,5 @@
 /*!	
-	\file    numericVariable.cpp
+	\file    stringVariable.cpp
 	\brief   Code of some functions of StringVariable class
 	\author
 	\date    2017-10-19
