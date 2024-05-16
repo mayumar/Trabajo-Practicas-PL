@@ -1,6 +1,6 @@
 /*!	
 	\file    ast.cpp
-	\brief   Code of funcitons of AST clas
+	\brief   Code of functions of AST clas
 	\author  
 	\date    2018-12-13
 	\version 1.0
@@ -24,7 +24,7 @@
 // Macros for the screen
 #include "../includes/macros.hpp"
 
-// 
+
 #include "../table/numericVariable.hpp"
 #include "../table/stringVariable.hpp"
 #include "../table/logicalVariable.hpp"

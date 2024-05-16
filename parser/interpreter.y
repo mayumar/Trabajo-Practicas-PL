@@ -8,14 +8,12 @@
 #include <iostream>
 #include <string>
 
-/*******************************************/
-/* NEW in example 5 */
+/*******************************************/<
 /* pow */
 #include <math.h>
 /*******************************************/
 
 /*******************************************/
-/* NEW in example 6 */
 /* Use for recovery of runtime errors */
 #include <setjmp.h>
 #include <signal.h>
@@ -30,7 +28,6 @@
 
 /*******************************************/
 /* 
-  NEW in example 16
   AST class
   IMPORTANT: this file must be before init.hpp
 */
@@ -38,7 +35,6 @@
 
 
 /*******************************************/
-/* NEW in example 7 */
 /* Table of symbol */
 #include "../table/table.hpp"
 /*******************************************/
@@ -51,33 +47,27 @@
 #include "../table/stringVariable.hpp"
 /*******************************************/
 
-/* NEW in example 15 */
 #include "../table/logicalVariable.hpp"
 
 /*******************************************/
-/* NEW in example 11 */
 #include "../table/numericConstant.hpp"
 /*******************************************/
 
 /*******************************************/
-/* NEW in example 15 */
 #include "../table/logicalConstant.hpp"
 /*******************************************/
 
 /*******************************************/
-/* NEW in example 13 */
 #include "../table/builtinParameter1.hpp"
 /*******************************************/
 
 /*******************************************/
-/* NEW in example 14 */
 #include "../table/builtinParameter0.hpp"
 #include "../table/builtinParameter2.hpp"
 /*******************************************/
 
 
 /*******************************************/
-/* NEW in example 10 */
 #include "../table/init.hpp"
 /*******************************************/
 
@@ -93,22 +83,18 @@ int yylex();
 extern int lineNumber; //!< External line counter
 
 
-/* NEW in example 15 */
 extern bool interactiveMode; //!< Control the interactive mode of execution of the interpreter
 
-/* New in example 17 */
 extern int control; //!< External: to control the interactive mode in "if" and "while" sentences 
 
 
 
 
 /***********************************************************/
-/* NEW in example 2 */
 extern std::string progname; //!<  Program name
 /***********************************************************/
 
 /*******************************************/
-/* NEW in example 6 */
 /*
  jhmp_buf
     This is an array type capable of storing the information of a calling environment to be restored later.
@@ -119,11 +105,9 @@ jmp_buf begin; //!<  It enables recovery of runtime errors
 
 
 /*******************************************/
-/* NEW in example 7 */
 extern lp::Table table; //!< Extern Table of Symbols
 
 /*******************************************/
-/* NEW in example 16 */
 extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 %}
@@ -141,29 +125,25 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 /*******************************************/
 /* Data type YYSTYPE  */
-/* NEW in example 4 */
 %union {
   double number;
-  char * string; 				 /* NEW in example 7 */
-  bool logic;						 /* NEW in example 15 */
-  lp::ExpNode *expNode;  			 /* NEW in example 16 */
-  std::list<lp::ExpNode *>  *parameters;    // New in example 16; NOTE: #include<list> must be in interpreter.l, init.cpp, interpreter.cpp
-  std::list<lp::Statement *> *stmts; /* NEW in example 16 */
-  lp::Statement *st;				 /* NEW in example 16 */
+  char * string; 				 
+  bool logic;						 
+  lp::ExpNode *expNode;  			 
+  std::list<lp::ExpNode *>  *parameters;    // NOTE: #include<list> must be in interpreter.l, init.cpp, interpreter.cpp
+  std::list<lp::Statement *> *stmts; 
+  lp::Statement *st;				 
   std::list<lp::CaseStmt *> *cases;
   lp::AST *prog;			
 }
 
 /* Type of the non-terminal symbols */
-// New in example 17: cond
 %type <expNode> exp cond 
 
-/* New in example 14 */
 %type <parameters> listOfExp  restOfListOfExp
 
 %type <stmts> stmtlist
 
-// New in example 17: if, while, block
 %type <st> stmt asgn print read read_string if while repeat for switch clear place
 
 %type <prog> program
@@ -175,17 +155,13 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 /* Minimum precedence */
 
 /*******************************************/
-/* NEW in example 5 */
 %token SEMICOLON
 /*******************************************/
 
-/* NEW in example 17: IF, ELSE, WHILE */
 %token READ READ_STRING PRINT IF THEN ELSE END_IF WHILE DO END_WHILE REPEAT UNTIL FOR END_FOR FROM STEP SWITCH CASE DEFAULT END_SWITCH
 
-/* NEW in example 7 */
 %right ASSIGNMENT
 
-/* NEW in example 14 */
 %token COMMA
 
 %token COLON
@@ -193,22 +169,14 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %token CLEAR PLACE
 
 /*******************************************/
-/* MODIFIED in example 4 */
 %token <number> NUMBER
 /*******************************************/
 
-/*******************************************/
-/* NEW in example 15 */
-%token <logic> BOOL
-/*******************************************/
-
-/* MODIFIED in examples 11, 13 */
-%token <string> VARIABLE STRING UNDEFINED CONSTANT BUILTIN
+%token <string> VARIABLE STRING CONSTANT BUILTIN
 
 /* Left associativity */
 
 /*******************************************************/
-/* NEW in example 15 */
 %left OR
 
 %left AND
@@ -218,10 +186,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %left NOT
 /*******************************************************/
 
-/* MODIFIED in example 3 */
 %left PLUS MINUS 
 
-/* MODIFIED in example 5 */
 %left MULTIPLICATION DIVISION INT_DIVISION MODULE CONCAT
 
 %left LPAREN RPAREN
@@ -229,14 +195,12 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %nonassoc  UNARY
 
 // Maximum precedence 
-/* MODIFIED in example 5 */
 %right POWER
 
 
 %%
  //! \name Grammar rules
 
-/* MODIFIED  Grammar in example 16 */
 
 program : stmtlist
 		  { 
@@ -316,13 +280,11 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		// Default action
 		// $$ = $1;
 	  }
-	/*  NEW in example 17 */
 	| if SEMICOLON
 	 {
 		// Default action
 		// $$ = $1;
 	 }
-	/*  NEW in example 17 */
 	| while SEMICOLON
 	 {
 		// Default action
@@ -367,7 +329,6 @@ controlSymbol:  /* Epsilon rule*/
 		}
 	;
 
-	/*  NEW in example 17 */
 if:	/* Simple conditional statement */
 	IF controlSymbol cond THEN stmtlist END_IF
     {
@@ -389,7 +350,6 @@ if:	/* Simple conditional statement */
 	 }
 ;
 
-	/*  NEW in example 17 */
 while:  WHILE controlSymbol cond DO stmtlist END_WHILE 
 	{
 		// Create a new while statement node
@@ -450,7 +410,6 @@ caselist: //Epsilon rule
 	 }
 ;
 
-	/*  NEW in example 17 */
 cond: 	LPAREN exp RPAREN
 		{ 
 			$$ = $2;
@@ -470,12 +429,10 @@ asgn:   VARIABLE ASSIGNMENT exp
 			$$ = new lp::AssignmentStmt($1, (lp::AssignmentStmt *) $3);
 		}
 
-	   /* NEW in example 11 */ 
 	| CONSTANT ASSIGNMENT exp 
 		{   
  			execerror("Semantic error in assignment: it is not allowed to modify a constant ", $1);
 		}
-	   /* NEW in example 11 */ 
 	| CONSTANT ASSIGNMENT asgn 
 		{   
  			execerror("Semantic error in multiple assignment: it is not allowed to modify a constant ",$1);
@@ -495,7 +452,6 @@ read:  READ LPAREN VARIABLE RPAREN
 			 $$ = new lp::ReadStmt($3);
 		}
 
-  	  /* NEW rule in example 11 */
 	| READ LPAREN CONSTANT RPAREN  
 		{   
  			execerror("Semantic error in \"read statement\": it is not allowed to modify a constant ",$3);
@@ -508,7 +464,6 @@ read_string:  READ_STRING LPAREN VARIABLE RPAREN
 			 $$ = new lp::ReadStringStmt($3);
 		}
 
-  	  /* NEW rule in example 11 */
 	| READ_STRING LPAREN CONSTANT RPAREN  
 		{   
  			execerror("Semantic error in \"read_string statement\": it is not allowed to modify a constant ",$3);
@@ -606,6 +561,7 @@ exp:	NUMBER
 
 	| 	STRING
 		{
+		  // Create a new string node
 		  $$ = new lp::StringNode($1);
 		}
 

@@ -64,7 +64,6 @@ IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 
 STRING \'([^'\\]|\\.)*\'
 
-/* NEW in example 3 */
 /* STATE  */
 %x ERROR COMMENT
 
@@ -77,24 +76,19 @@ STRING \'([^'\\]|\\.)*\'
 			/* Line counter */
            	lineNumber++; 
 	
-			/* MODIFIED in example 3 */
-			/* COMMENTED in example 5 */
         	/* return NEWLINE; */
         }
 
 ";"		{
-			/* NEW in example 5 */
 			return SEMICOLON;
 		}
 
 
 ","		{
-			/* NEW in example 14 */
 			return COMMA;
 		}
 
 {NUMBER}  			  {
-						/* MODIFIED in example 4 */
 						/* Conversion of type and sending of the numerical value to the parser */
 						yylval.number = atof(yytext); 
 
@@ -112,7 +106,6 @@ STRING \'([^'\\]|\\.)*\'
 					  }
 
 {IDENTIFIER}   		 {
-						 /* NEW in example 7 */
 						 std::string identifier(yytext);
 
 						 for(int i = 0; identifier[i]; i++)
@@ -139,7 +132,6 @@ STRING \'([^'\\]|\\.)*\'
 								return VARIABLE;
 							}
 
-						/* MODIFIED in example 11 */
 						/* 
 							If the identifier is in the table of symbols then its token is returned 
 								The identifier can be a variable or a numeric constant
@@ -211,7 +203,6 @@ STRING \'([^'\\]|\\.)*\'
 
 .								{ 	
 									/* Any other character */
-									/* MODIFIIED in example 3 */
 									/* Change to error state */
 									BEGIN(ERROR); 
 
@@ -222,8 +213,7 @@ STRING \'([^'\\]|\\.)*\'
 									yymore();  
 								}
 
-<ERROR>[^0-9+\-*/()\^% \t\n\;a-zA-Z=<>!&]	{ /* MODIFIED in examples 5, 7, 15 */
-								  /* NEW in example 3 */
+<ERROR>[^0-9+\-*/()\^% \t\n\;a-zA-Z=<>!&]	{
 								  /* 
 									The current value of yytext 
 									will be concatenated with the next character
@@ -232,7 +222,6 @@ STRING \'([^'\\]|\\.)*\'
 								}
 
 <ERROR>(.|\n)               { 
-								/* NEW in example 3 */
 								/* Rewind one position */
 								yyless(yyleng-1); 
 

@@ -33,7 +33,7 @@ namespace lp
 		\brief   Type of the expression
 		\warning Pure virtual function: must be redefined in the heir classes
 		\return  int
-		\sa		   printAST, evaluateNumber, evaluateBool
+		\sa		   printAST, evaluateNumber, evaluateString, evaluateBool
 	*/
     virtual int getType() = 0;
 
@@ -42,7 +42,7 @@ namespace lp
 		\brief   Print the AST for expression
 		\warning Pure virtual function: must be redefined in the heir classes
 		\return  void
-		\sa		   getType, evaluateNumber, evaluateBool
+		\sa		   getType, evaluateNumber, evaluateString, evaluateBool
 	*/
     virtual void printAST() = 0;
 
@@ -50,7 +50,7 @@ namespace lp
 		\brief   Evaluate the expression as NUMBER
 		\warning Virtual function: could be redefined in the heir classes
 		\return  double
-		\sa		   getType, printAST, evaluateBool
+		\sa		   getType, printAST, evaluateString, evaluateBool
 	*/
     virtual double evaluateNumber()
 	{
@@ -61,7 +61,7 @@ namespace lp
 		\brief   Evaluate the expression as STRING
 		\warning Virtual function: could be redefined in the heir classes
 		\return  std::string
-		\sa		   getType, printAST, evaluateBool
+		\sa		   getType, printAST, evaluateNumber, evaluateBool
 	*/
     virtual std::string evaluateString()
 	{
@@ -72,7 +72,7 @@ namespace lp
 		\brief   Evaluate the expression as BOOL
 		\warning Virtual function: could be redefined in the heir classes
 		\return  bool
-		\sa		   getType, printAST, evaluateNumber
+		\sa		   getType, printAST, evaluateString, evaluateNumber
 	*/
     virtual bool evaluateBool()
 	{
@@ -99,47 +99,47 @@ class VariableNode : public ExpNode
 
 	/*!		
 		\brief Constructor of VariableNode
-		\param value: double
-		\post  A new NumericVariableNode is created with the name of the parameter
+		\param id: std::string
+		\post  A new VariableNode is created with the name of the parameter
 		\note  Inline function
 	*/
-	  VariableNode(std::string const & value)
+	  VariableNode(std::string const & id)
 		{
-			this->_id = value; 
+			this->_id = id; 
 		}
 
 	/*!	
 		\brief   Type of the Variable
 		\return  int
-		\sa		   printAST
+		\sa		   printAST, evaluateNumber, evaluateString, evaluateBool
 	*/
 	 int getType();
 
 	/*!
 		\brief   Print the AST for Variable
 		\return  void
-		\sa		   getType, evaluateNumber, evaluateBool
+		\sa		   getType, evaluateNumber, evaluateString, evaluateBool
 	*/
 	  void printAST();
 
 	/*!	
 		\brief   Evaluate the Variable as NUMBER
 		\return  double
-		\sa		   printAST
+		\sa		   getType, printAST, evaluateString, evaluateBool
 	*/
 	  double evaluateNumber();
 
 	/*!	
 		\brief   Evaluate the Variable as STRING
-		\return  double
-		\sa		   printAST
+		\return  std::string
+		\sa		   getType, printAST, evaluateNumber, evaluateBool
 	*/
 	  std::string evaluateString();
 
 	/*!	
 		\brief   Evaluate the Variable as BOOL
 		\return  bool
-		\sa		   getType, printAST, evaluateNumber
+		\sa		   getType, printAST, evaluateNumber, evaluateString
 	*/
 	  bool evaluateBool();
 
@@ -162,12 +162,13 @@ class ConstantNode : public ExpNode
 
 	/*!		
 		\brief Constructor of ConstantNode
-		\param value: double
+		\param id: std::string
 		\post  A new ConstantNode is created with the name of the parameter
+		\note  Inline function
 	*/
-	  ConstantNode(std::string value)
+	  ConstantNode(std::string id)
 		{
-			this->_id = value; 
+			this->_id = id; 
 		}
 
 	/*!	
@@ -187,7 +188,7 @@ class ConstantNode : public ExpNode
 	/*!	
 		\brief   Evaluate the Constant as NUMBER
 		\return  double
-		\sa		   getType, printAST, 
+		\sa		   getType, printAST, evaluateBool
 	*/
 	  double evaluateNumber();
 
@@ -254,6 +255,11 @@ class NumberNode : public ExpNode
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+/*!	
+  \class StringNode
+  \brief Definition of atributes and methods of StringNode class
+  \note  StringNode Class publicly inherits from ExpNode class
+*/
 class StringNode : public ExpNode 
 {
  private: 	
@@ -273,16 +279,16 @@ class StringNode : public ExpNode
 	}
 
 	/*!	
-	\brief   Get the type of the expression: NUMBER
+	\brief   Get the type of the expression: STRING
 	\return  int
-	\sa		   printAST, evaluateNumber
+	\sa		   printAST, evaluateString
 	*/
 	int getType();
 
 	/*!
 		\brief   Print the AST for expression
 		\return  void
-		\sa		   getType, evaluateNumber
+		\sa		   getType, evaluateString
 	*/
 	void printAST();
 
@@ -542,6 +548,7 @@ class NumericOperatorNode : public OperatorNode
 	/*!	
 	\brief   Get the type of the children expressions
 	\return  int
+	\sa		   printAST
 	*/
 	int getType();
 };
@@ -573,6 +580,7 @@ class StringOperatorNode : public OperatorNode
 	/*!	
 	\brief   Get the type of the children expressions
 	\return  int
+	\sa		   printAST
 	*/
 	int getType();
 };
@@ -603,6 +611,7 @@ public:
 	/*!	
 	\brief   Get the type of the children expressions
 	\return  int
+	\sa		   printAST
 	*/
 	int getType();
 
@@ -636,6 +645,7 @@ class LogicalOperatorNode : public OperatorNode
 	/*!	
 	\brief   Get the type of the children expressions
 	\return  int
+	\sa		   printAST
 	*/
 	int getType();
 };
@@ -804,32 +814,32 @@ class DivisionNode : public NumericOperatorNode
 
 /*!	
   \class   IntDivisionNode
-  \brief   Definition of atributes and methods of DivisionNode class
-  \note    DivisionNode Class publicly inherits from NumericOperatorNode class 
+  \brief   Definition of atributes and methods of IntDivisionNode class
+  \note    IntDivisionNode Class publicly inherits from NumericOperatorNode class 
 		   and adds its own printAST and evaluate functions
 */
 class IntDivisionNode : public NumericOperatorNode 
 {
   public:
 /*!		
-	\brief Constructor of DivisionNode uses NumericOperatorNode's constructor as members initializer
+	\brief Constructor of IntDivisionNode uses NumericOperatorNode's constructor as members initializer
 	\param L: pointer to ExpNode
 	\param R: pointer to ExpNode
-	\post  A new DivisionNode is created with the parameter
+	\post  A new IntDivisionNode is created with the parameter
 */
   IntDivisionNode(ExpNode *L, ExpNode *R): NumericOperatorNode(L,R) 
   {
 		// Empty
   }
 /*!
-	\brief   printAST the DivisionNode
+	\brief   printAST the IntDivisionNode
 	\return  void
 	\sa		   evaluateNumber
 */
   void printAST();
 
 /*!	
-	\brief   Evaluate the DivisionNode
+	\brief   Evaluate the IntDivisionNode
 	\return  double
 	\sa		   printAST
 */
@@ -1475,7 +1485,7 @@ class OrNode : public LogicalOperatorNode
 
 /*!	
   \class   NotNode
-  \brief   Definition of atributes and methods of UnaryPlusNode class
+  \brief   Definition of atributes and methods of NotNode class
   \note    NotNode Class publicly inherits from LogicalUnaryOperatorNode class
 */
 class NotNode : public LogicalUnaryOperatorNode 
@@ -1689,9 +1699,9 @@ class ReadStmt : public Statement
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!	
-  \class   ReadStmt
-  \brief   Definition of atributes and methods of ReadStmt class
-  \note    ReadStmt Class publicly inherits from Statement class 
+  \class   ReadStringStmt
+  \brief   Definition of atributes and methods of ReadStringStmt class
+  \note    ReadStringStmt Class publicly inherits from Statement class 
 		   and adds its own printAST and evaluate functions
 */
 class ReadStringStmt : public Statement 
@@ -1770,7 +1780,6 @@ class EmptyStmt : public Statement
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// NEW in example 17
 
 /*!	
   \class   IfStmt
@@ -1836,7 +1845,6 @@ class IfStmt : public Statement
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// NEW in example 17
 
 /*!	
   \class   WhileStmt
@@ -1847,7 +1855,7 @@ class IfStmt : public Statement
 class WhileStmt : public Statement 
 {
  private:
-  ExpNode *_cond; //!< Condicion of the while statement
+  ExpNode *_cond; //!< Condition of the while statement
   Statement *_stmt; //!< Statement of the body of the while loop
 
   public:
@@ -1882,11 +1890,17 @@ class WhileStmt : public Statement
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+/*!	
+  \class   RepeatStmt
+  \brief   Definition of atributes and methods of RepeatStmt class
+  \note    RepeatStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
 class RepeatStmt : public Statement
 {
 	private:
   		Statement *_stmt; //!< Statement of the body of the repeat loop
-		ExpNode *_cond; //!< Condicion of the repeat statement
+		ExpNode *_cond; //!< Condition of the repeat statement
 	
 	public:
 	/*!		
@@ -1919,19 +1933,25 @@ class RepeatStmt : public Statement
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+/*!	
+  \class   ForStmt
+  \brief   Definition of atributes and methods of ForStmt class
+  \note    ForStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
 class ForStmt : public Statement
 {
 	private:
-		std::string _id;
-		ExpNode *_exp1;
-		ExpNode *_exp2;
-		ExpNode *_exp3;
-		Statement *_stmt;
+		std::string _id; //!< For loop variable identifier
+		ExpNode *_exp1; //!< FROM expression of the for loop
+		ExpNode *_exp2; //!< UNTIL expression of the for loop
+		ExpNode *_exp3; //!< STEP expression of the for loop
+		Statement *_stmt; //!< For loop body Statement
 	
 	public:
 	/*!		
 		\brief Constructor of  ForStmt
-		\param id: Variable id 
+		\param id: string, loop variable identifier
 		\param expression1: FROM expression of the loop 
 		\param expression2: UNTIL expression of the loop 
 		\param expression3: STEP expression of the loop 
@@ -1949,7 +1969,7 @@ class ForStmt : public Statement
 
 	/*!		
 		\brief Constructor of  ForStmt
-		\param id: Variable id 
+		\param id: string, identifier
 		\param expression1: FROM expression of the loop 
 		\param expression2: UNTIL expression of the loop 
 		\param statement: Statement of the body of the loop 
@@ -1990,15 +2010,15 @@ class ForStmt : public Statement
 class CaseStmt : public Statement 
 {
  private: 	
-   ExpNode * _expression; //expression of the CaseStmt
-   Statement * _statements; //statements of the CaseStmt
+   ExpNode * _expression; //!< Expression of the CaseStmt
+   Statement * _statements; //!< Statements of the CaseStmt
  
  public:
 
 /*!		
 	\brief Constructor of CaseStmt
-	\param exp: pointer to ExpNode
-	\param stmt: pointer to Statement
+	\param exp: expression of the Case
+	\param stmt: statement of the Case
 	\post  A new CaseStmt is created with the value of the parameter
 	\note  Inline function
 */
@@ -2008,6 +2028,13 @@ class CaseStmt : public Statement
 		this->_statements = stmt;
 	}
 
+	/*!
+		\brief 	Get the ExpNode of the Case expression
+		\return pointer to ExpNode
+		\note 	Inline function
+		\sa			printAST, evaluate
+	*/
+
 	ExpNode * getExp(){
 		return _expression;
 	}
@@ -2015,14 +2042,14 @@ class CaseStmt : public Statement
 	/*!
 		\brief   Print the AST for expression
 		\return  void
-		\sa		   evaluateBool
+		\sa		   getExp, evaluate
 	*/
 	void printAST();
 
 	/*!	
 		\brief   Evaluate the expression
 		\return  bool
-		\sa		   printAST
+		\sa		   getExp, printAST
 	*/
 	void evaluate();
 };
@@ -2040,16 +2067,16 @@ class SwitchStmt : public Statement
 {
 	private:
 
-		ExpNode *_exp;
-		std::list<CaseStmt *> *_cases;
-		Statement * _defaultStmt;
+		ExpNode *_exp; //!< Expression of the switch
+		std::list<CaseStmt *> *_cases; //!< List of the switch cases
+		Statement * _defaultStmt; //!< Default statement of the switch
 
 	public:
 	/*!		
-		\brief Constructor of  BlockStmt
+		\brief Constructor of  SwitchStmt
 		\param exp: expression for the switch
 		\param cases: list of CaseStmt
-		\post  A new BlockStmt is created with the parameters
+		\post  A new SwitchStmt is created with the parameters
 	*/
 		SwitchStmt(ExpNode *exp, std::list<CaseStmt *> *cases)
 		{
@@ -2059,11 +2086,11 @@ class SwitchStmt : public Statement
 		}
 
 	/*!		
-		\brief Constructor of  BlockStmt
+		\brief Constructor of  SwitchStmt
 		\param exp: expression for the switch
 		\param cases: list of CaseStmt
-		\param defaultStmt: default statements
-		\post  A new BlockStmt is created with the parameters
+		\param defaultStmt: default statement
+		\post  A new SwitchStmt is created with the parameters
 	*/
 		SwitchStmt(ExpNode *exp, std::list<CaseStmt *> *cases, Statement *defaultStmt)
 		{
@@ -2096,7 +2123,6 @@ class SwitchStmt : public Statement
   \brief   Definition of atributes and methods of ClearStmt class
   \note    ClearStmt Class publicly inherits from Statement class 
 		   and adds its own print and evaluate functions
-  \warning  In this class, printAST and evaluate functions have the same meaning.
 */
 class ClearStmt: public Statement 
 {
@@ -2109,7 +2135,7 @@ class ClearStmt: public Statement
 */
   ClearStmt()
 	{
-
+		// Empty
 	}
 
 /*!
@@ -2121,7 +2147,7 @@ class ClearStmt: public Statement
 
 /*!	
 	\brief   Evaluate the ClearStmt
-	\return  double
+	\return  void
 	\sa		   printAST
 */
   void evaluate();
@@ -2136,19 +2162,18 @@ class ClearStmt: public Statement
   \brief   Definition of atributes and methods of PlaceStmt class
   \note    PlaceStmt Class publicly inherits from Statement class 
 		   and adds its own print and evaluate functions
-  \warning  In this class, printAST and evaluate functions have the same meaning.
 */
 class PlaceStmt: public Statement 
 {
  private:
-  	ExpNode *_exp1;
-	ExpNode *_exp2;
+  	ExpNode *_exp1; //!< First coord for PLACE
+	ExpNode *_exp2; //!< Second coord for PLACE
 
  public:
 /*!		
 	\brief Constructor of PlaceStmt 
-	\param exp1: pointer to ExpNode
-	\param exp2: pointer to ExpNode
+	\param exp1: expression of the first coord
+	\param exp2: expression of the second coord
 	\post  A new PlaceStmt is created
 */
   PlaceStmt(ExpNode *exp1, ExpNode *exp2)
@@ -2166,7 +2191,7 @@ class PlaceStmt: public Statement
 
 /*!	
 	\brief   Evaluate the PlaceStmt
-	\return  double
+	\return  void
 	\sa		   printAST
 */
   void evaluate();
@@ -2174,7 +2199,6 @@ class PlaceStmt: public Statement
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// NEW in example 17
 
 /*!	
   \class   BlockStmt

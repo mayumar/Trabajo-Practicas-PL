@@ -1,7 +1,7 @@
 /*!	
 	\file    numericVariable.cpp
 	\brief   Code of some functions of StringVariable class
-	\authos 
+	\author
 	\date    2017-10-19
 	\version 1.0
 */

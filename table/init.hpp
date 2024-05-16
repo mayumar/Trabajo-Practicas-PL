@@ -22,13 +22,11 @@
 #include "../parser/interpreter.tab.h"
 
 ///////////////////////////////////////
-// NEW in example 13
 #include "mathFunction.hpp"
 #include "builtinParameter1.hpp"
 ///////////////////////////////////////
 
 ///////////////////////////////////////
-// NEW in example 14
 #include "builtinParameter0.hpp"
 #include "builtinParameter2.hpp"
 ///////////////////////////////////////
@@ -51,7 +49,6 @@ static struct {
 /*!
   \ brief Predefined logical constants
 */
-// NEW in example 16
 static struct {
           std::string name ;
 	      bool value;
@@ -62,7 +59,6 @@ static struct {
 	                   };
 
 
-// NEW in example 12 
 /*!
   \ brief Predefined keywords
 */
@@ -100,7 +96,6 @@ static struct {
 
 
 
-// NEW in example 13
 
 static struct {    /* Predefined functions names */ 
                 std::string name ;
@@ -118,7 +113,6 @@ static struct {    /* Predefined functions names */
 		               {"",       0}
 		              };
 
-// NEW in example 14
 static struct {   
                 std::string name ;
 				lp::TypePointerDoubleFunction_0 function;
@@ -128,7 +122,6 @@ static struct {
 		              };
 
 
-// NEW in example 14
 
 static struct {    /* Nombres predefinidos de funciones con 2 argumentos */ 
                 std::string name ;
