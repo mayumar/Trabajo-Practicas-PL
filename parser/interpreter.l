@@ -183,6 +183,10 @@ STRING \'([^'\\]|\\.)*\'
 
 ":"		{ return COLON; }
 
+"#y"	{ return AND; }
+"#o"	{ return OR; }
+"#no"	{ return NOT; }
+
 !!.* 	{ }
 
 "<<" 	{ BEGIN(COMMENT); }
