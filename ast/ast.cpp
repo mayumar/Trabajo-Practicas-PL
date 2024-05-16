@@ -1793,6 +1793,7 @@ void lp::ClearStmt::printAST(){
 
 void lp::ClearStmt::evaluate(){
 	std::cout << CLEAR_SCREEN;
+	PLACE(0,0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1803,7 +1804,7 @@ void lp::PlaceStmt::printAST(){
 }
 
 void lp::PlaceStmt::evaluate(){
-	std::cout << PLACE((int)this->_exp1->evaluateNumber(), (int)this->_exp2->evaluateNumber());
+	PLACE((int)this->_exp1->evaluateNumber(), (int)this->_exp2->evaluateNumber());
 }
 
 

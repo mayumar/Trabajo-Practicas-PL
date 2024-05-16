@@ -8,7 +8,7 @@
 
 														CONTROL		FECHA
 -------------------------------------------------------------------------------------
-NO EXISTEN CONFLICTOS EN LAS REGLAS DE PRODUCCIÓN:		[ ]
+NO EXISTEN CONFLICTOS EN LAS REGLAS DE PRODUCCIÓN:		[Y]
 -------------------------------------------------------------------------------------
 
 														CONTROL		FECHA
@@ -123,7 +123,7 @@ NUMÉRICOS											[Y]
 		DISTINTO DE <>							[Y]
 
 	LÓGICOS											[Y]
-		DISYUNCIÓN #o							[ ]
+		DISYUNCIÓN #o							[Y]
 		CONJUNCIÓN #y							[Y]
 		NEGACIÓN   #no							[Y]
 
@@ -139,7 +139,7 @@ OTROS:													[Y]
 
 														CONTROL		FECHA
 -------------------------------------------------------------------------------------
-SENTENCIAS DE CONTROL:									[ ]						
+SENTENCIAS DE CONTROL:									[Y]						
 -------------------------------------------------------------------------------------
 	ASIGNACIÓN										[Y]
 		IDENTIFICADOR := EXPR NUMÉRICA			[Y]
@@ -194,17 +194,17 @@ SENTENCIAS DE CONTROL:									[ ]
 
 														CONTROL		FECHA
 -------------------------------------------------------------------------------------
-COMANDOS ESPECIALES:									[ ]	
+COMANDOS ESPECIALES:									[Y]	
 --------------------------------------------------------------------------------------
 	borrar_pantalla									[Y]
-	lugar(expresión numérica 1,expresión numérica 2)[ ]
+	lugar(expresión numérica 1,expresión numérica 2)[Y]
 
 
 														CONTROL		FECHA
 -------------------------------------------------------------------------------------
-OBSERVACIONES:											[ ]		
+OBSERVACIONES:											[Y]		
 -------------------------------------------------------------------------------------
-CAMBIO DE TIPO DINÁMICO	DE LA VARIABLE				[ ]
+CAMBIO DE TIPO DINÁMICO	DE LA VARIABLE				[Y]
 
 
 														CONTROL		FECHA
