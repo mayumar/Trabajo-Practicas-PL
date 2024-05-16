@@ -1398,9 +1398,9 @@ void lp::PrintStmt::printAST()
 
 void lp::PrintStmt::evaluate() 
 {
-	std::cout << BIYELLOW; 
-	std::cout << "print: ";
-	std::cout << RESET; 
+	// std::cout << BIYELLOW; 
+	// std::cout << "print: ";
+	// std::cout << RESET; 
 
 	switch(this->_exp->getType())
 	{
@@ -1439,9 +1439,9 @@ void lp::ReadStmt::printAST()
 void lp::ReadStmt::evaluate() 
 {   
 	double value;
-	std::cout << BIYELLOW; 
-	std::cout << "Insert a numeric value --> " ;
-	std::cout << RESET; 
+	// std::cout << BIYELLOW; 
+	// std::cout << "Insert a numeric value --> " ;
+	// std::cout << RESET; 
 	std::cin >> value;
 
 	/* Get the identifier in the table of symbols as Variable */
@@ -1486,9 +1486,9 @@ void lp::ReadStringStmt::printAST()
 void lp::ReadStringStmt::evaluate() 
 {   
 	std::string value;
-	std::cout << BIYELLOW; 
-	std::cout << "Insert a alphanumeric value --> " ;
-	std::cout << RESET; 
+	// std::cout << BIYELLOW; 
+	// std::cout << "Insert a alphanumeric value --> " ;
+	// std::cout << RESET; 
 	std::cin >> value;
 
 	/* Get the identifier in the table of symbols as Variable */
@@ -1756,6 +1756,29 @@ void lp::SwitchStmt::evaluate()
 		this->_defaultStmt->evaluate();
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::ClearStmt::printAST(){
+	std::cout << "ClearStmt";
+}
+
+void lp::ClearStmt::evaluate(){
+	std::cout << CLEAR_SCREEN;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::PlaceStmt::printAST(){
+	std::cout << "PlaceStmt";
+}
+
+void lp::PlaceStmt::evaluate(){
+	std::cout << PLACE((int)this->_exp1->evaluateNumber(), (int)this->_exp2->evaluateNumber());
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

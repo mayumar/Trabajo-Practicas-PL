@@ -164,7 +164,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %type <stmts> stmtlist
 
 // New in example 17: if, while, block
-%type <st> stmt asgn print read read_string if while repeat for switch
+%type <st> stmt asgn print read read_string if while repeat for switch clear place
 
 %type <prog> program
 
@@ -189,6 +189,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %token COMMA
 
 %token COLON
+
+%token CLEAR PLACE
 
 /*******************************************/
 /* MODIFIED in example 4 */
@@ -340,6 +342,18 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 	 }
 	/* Switch statement */
 	| switch SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
+
+	| clear SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
+
+	| place SEMICOLON
 	 {
 		// Default action
 		// $$ = $1;
@@ -498,6 +512,18 @@ read_string:  READ_STRING LPAREN VARIABLE RPAREN
 	| READ_STRING LPAREN CONSTANT RPAREN  
 		{   
  			execerror("Semantic error in \"read_string statement\": it is not allowed to modify a constant ",$3);
+		}
+;
+
+clear: CLEAR
+		{
+			$$ = new lp::ClearStmt();
+		}
+;
+
+place: PLACE LPAREN exp COMMA exp RPAREN
+		{
+			$$ = new lp::PlaceStmt($3, $5);
 		}
 ;
 

@@ -2088,6 +2088,89 @@ class SwitchStmt : public Statement
 
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   ClearStmt
+  \brief   Definition of atributes and methods of ClearStmt class
+  \note    ClearStmt Class publicly inherits from Statement class 
+		   and adds its own print and evaluate functions
+  \warning  In this class, printAST and evaluate functions have the same meaning.
+*/
+class ClearStmt: public Statement 
+{
+ private:
+
+ public:
+/*!		
+	\brief Constructor of ClearStmt 
+	\post  A new ClearStmt is created
+*/
+  ClearStmt()
+	{
+
+	}
+
+/*!
+	\brief   Print the AST for ClearStmt
+	\return  void
+	\sa		   evaluate
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the ClearStmt
+	\return  double
+	\sa		   printAST
+*/
+  void evaluate();
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   PlaceStmt
+  \brief   Definition of atributes and methods of PlaceStmt class
+  \note    PlaceStmt Class publicly inherits from Statement class 
+		   and adds its own print and evaluate functions
+  \warning  In this class, printAST and evaluate functions have the same meaning.
+*/
+class PlaceStmt: public Statement 
+{
+ private:
+  	ExpNode *_exp1;
+	ExpNode *_exp2;
+
+ public:
+/*!		
+	\brief Constructor of PlaceStmt 
+	\param exp1: pointer to ExpNode
+	\param exp2: pointer to ExpNode
+	\post  A new PlaceStmt is created
+*/
+  PlaceStmt(ExpNode *exp1, ExpNode *exp2)
+	{
+		this->_exp1 = exp1;
+		this->_exp2 = exp2;
+	}
+
+/*!
+	\brief   Print the AST for PlaceStmt
+	\return  void
+	\sa		   evaluate
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the PlaceStmt
+	\return  double
+	\sa		   printAST
+*/
+  void evaluate();
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

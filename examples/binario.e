@@ -6,14 +6,14 @@ leer(n);
 
 r := ' ';
 
-mientras (n <> 0) do
+mientras (n <> 0) hacer
 	si ((n % 2) = 0) entonces
 		!! concatenación con 0
 		r := '0' || r;  
 	si_no
 		!! concatenación con 1
 		r := '1' || r;
-	end_si
+	fin_si;
 
 	!! Cociente de la división entera
        n := n // 2;

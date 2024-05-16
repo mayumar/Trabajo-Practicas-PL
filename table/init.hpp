@@ -93,6 +93,8 @@ static struct {
 						{"#o", OR},
 						{"#y", AND},
 						{"#no", NOT},
+						{"borrar_pantalla", CLEAR},
+						{"lugar", PLACE},
 	                    {"",      0}
 	                   };
 
