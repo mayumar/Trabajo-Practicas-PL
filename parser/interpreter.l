@@ -58,7 +58,7 @@ DIGIT  [0-9]
 
 CHAR   [a-zA-Z]
 
-NUMBER {DIGIT}+(\.{DIGIT}+)?((E|e)[+\-]?{DIGIT}+)?
+NUMBER [+\-]?{DIGIT}+(\.{DIGIT}+)?((E|e)[+\-]?{DIGIT}+)?
 
 IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 
