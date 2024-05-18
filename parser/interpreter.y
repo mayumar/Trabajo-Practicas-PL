@@ -8,7 +8,7 @@
 #include <iostream>
 #include <string>
 
-/*******************************************/<
+/*******************************************/
 /* pow */
 #include <math.h>
 /*******************************************/
@@ -171,8 +171,9 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 /*******************************************/
 %token <number> NUMBER
 /*******************************************/
-
-%token <string> VARIABLE STRING CONSTANT BUILTIN
+%token <logic> BOOL
+/*******************************************/
+%token <string> VARIABLE STRING UNDEFINED CONSTANT BUILTIN
 
 /* Left associativity */
 
