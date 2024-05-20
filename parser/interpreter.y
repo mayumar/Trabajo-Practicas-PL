@@ -432,11 +432,11 @@ asgn:   VARIABLE ASSIGNMENT exp
 
 	| CONSTANT ASSIGNMENT exp 
 		{   
- 			execerror("Semantic error in assignment: it is not allowed to modify a constant ", $1);
+ 			execerror("Error semántico en la asignación: no está permitido modificar una constante ", $1);
 		}
 	| CONSTANT ASSIGNMENT asgn 
 		{   
- 			execerror("Semantic error in multiple assignment: it is not allowed to modify a constant ",$1);
+ 			execerror("Error semántico en múltiples asignaciones: no está permitido modificar una constante ",$1);
 		}
 ;
 
@@ -455,7 +455,7 @@ read:  READ LPAREN VARIABLE RPAREN
 
 	| READ LPAREN CONSTANT RPAREN  
 		{   
- 			execerror("Semantic error in \"read statement\": it is not allowed to modify a constant ",$3);
+ 			execerror("Error semántico en \"leer()\": no está permitido modificar una constante ",$3);
 		}
 ;
 
@@ -467,7 +467,7 @@ read_string:  READ_STRING LPAREN VARIABLE RPAREN
 
 	| READ_STRING LPAREN CONSTANT RPAREN  
 		{   
- 			execerror("Semantic error in \"read_string statement\": it is not allowed to modify a constant ",$3);
+ 			execerror("Error semántico en \"leer_cadena()\": no está permitido modificar una constante ",$3);
 		}
 ;
 
@@ -492,8 +492,8 @@ exp:	NUMBER
 	| 	exp PLUS exp 
 		{ 
 			// Create a new plus node
-			 $$ = new lp::PlusNode($1, $3);
-		 }
+			$$ = new lp::PlusNode($1, $3);
+		}
 
 	| 	exp MINUS exp
       	{
@@ -612,11 +612,11 @@ exp:	NUMBER
 						break;
 
 					default:
-				  			 execerror("Syntax error: too many parameters for function ", $1);
+				  			 execerror("Error de sintaxis: demasiados parámetros para la función ", $1);
 				} 
 			}
 			else
-	  			 execerror("Syntax error: incompatible number of parameters for function", $1);
+	  			 execerror("Error de sintaxis: numero de parámetros incompatibles para la función", $1);
 		}
 
 	| exp GREATER_THAN exp

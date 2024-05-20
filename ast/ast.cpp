@@ -86,7 +86,7 @@ double lp::VariableNode::evaluateNumber()
 	}
 	else
 	{
-		warning("Runtime error in evaluateNumber(): the variable is not numeric", 
+		warning("Error de tiempo de ejecucion: la variable no es numerica", 
 				   this->_id);
 	}
 
@@ -98,7 +98,7 @@ std::string lp::VariableNode::evaluateString()
 {
 	std::string result = "";
 
-	if (this->getType() == STRING)
+	if (this->getType() == STRING || this->getType() == NUMBER)
 	{
 		// Get the identifier in the table of symbols as StringVariable
 		lp::StringVariable *var = (lp::StringVariable *) table.getSymbol(this->_id);
@@ -108,7 +108,7 @@ std::string lp::VariableNode::evaluateString()
 	}
 	else
 	{
-		warning("Runtime error in evaluateString(): the variable is not a string", this->_id);
+		warning("Error de tiempo de ejecucion: la variable no es alfanumerica", this->_id);
 	}
 
 	// Return the value of the StringVariable
@@ -130,7 +130,7 @@ bool lp::VariableNode::evaluateBool()
 	}
 	else
 	{
-		warning("Runtime error in evaluateBool(): the variable is not boolean",
+		warning("Error de tiempo de ejecucion: la variable no es booleana",
 				   this->_id);
 	}
 
@@ -172,7 +172,7 @@ double lp::ConstantNode::evaluateNumber()
 	}
 	else
 	{
-		warning("Runtime error in evaluateNumber(): the constant is not numeric", 
+		warning("Error de tiempo de ejecucion: la constante no es numerica", 
 				   this->_id);
 	}
 
@@ -194,14 +194,13 @@ bool lp::ConstantNode::evaluateBool()
 	}
 	else
 	{
-		warning("Runtime error in evaluateBool(): the constant is not boolean",
+		warning("Error de tiempo de ejecucion: la constante no es booleana",
 				   this->_id);
 	}
 
 	// Return the value of the LogicalVariable
 	return result;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,18 +248,18 @@ std::string lp::StringNode::evaluateString()
 			{
 				case 'n':
 					processedValue += '\n';
-					++i; // Saltar el 'n' después de '\\'
+					++i;
 					break;
 				case '\'':
 					processedValue += '\'';
-					++i; // Saltar el '\'' después de '\\'
+					++i;
 					break;
 				case 't':
 					processedValue += '\t';
-					++i; // Saltar el 't' después de '\\'
+					++i;
 					break;
 				default:
-					processedValue += this->_string[i]; // Añadir el '\\' literal
+					processedValue += this->_string[i];
 					break;
 			}
 		} else
@@ -331,8 +330,9 @@ int lp::NumericOperatorNode::getType()
 int lp::StringOperatorNode::getType()
 {
 	int result = 0;
-		
-	if ((this->_left->getType() == STRING || this->_left->getType() == NUMBER) and (this->_right->getType() == STRING || this->_left->getType() == NUMBER))
+	
+	if ((this->_left->getType() == STRING || this->_right->getType() == NUMBER) and 
+		(this->_left->getType() == NUMBER || this->_right->getType() == STRING))
 		result = STRING;
 	else
 		warning("Runtime error: incompatible types for", "String Operator");
@@ -697,15 +697,17 @@ std::string lp::ConcatNode::evaluateString()
 {
 	std::string result = "";
 
+	result = this->_left->evaluateString() + this->_right->evaluateString();
+	
 	// Ckeck the types of the expressions
-	if (this->getType() == STRING)
-	{
-		result = this->_left->evaluateString() + this->_right->evaluateString();
-	}
-	else
-	{
-		warning("Runtime error: the expressions are not strings for ", "Concat");
-	}
+	
+	// if (this->getType() == STRING or this->getType() == NUMBER)
+	// {
+	// }
+	// else
+	// {
+	// 	warning("Runtime error: the expressions are not strings for ", "Concat");
+	// }
 
   return result;
 }

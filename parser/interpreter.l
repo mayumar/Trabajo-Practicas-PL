@@ -226,7 +226,7 @@ STRING \'([^'\\]|\\.)*\'
 								yyless(yyleng-1); 
 
 								/* Display the error message */
-								warning("Lexical error", yytext);
+								warning("Símbolo no reconocido: ", yytext);
 
 								/* Restore the initial state */
    								BEGIN(INITIAL);
