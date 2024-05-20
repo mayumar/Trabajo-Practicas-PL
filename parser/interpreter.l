@@ -152,6 +152,8 @@ CADENA \'([^'\\]|\\.)*\'
                      }
 
 ":="    { return ASSIGNMENT; }
+"+:="	{ return PLUSASSIGNMENT; }
+"-:="	{ return MINUSASSIGNMENT; }
 
 "-"     { return MINUS;  } 	
 "+"	    { return PLUS;   } 	
@@ -160,6 +162,8 @@ CADENA \'([^'\\]|\\.)*\'
 "//"    { return INT_DIVISION; }
 "%"     { return MODULE; }
 "**"    { return POWER; }
+"++"	{ return PLUSPLUS; }
+"--"	{ return MINUSMINUS;}
  
 "||"    { return CONCAT; }
 

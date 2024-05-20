@@ -245,6 +245,6 @@ MODOS DE EJECUCIÓN:										[Y]
 OPCIONALES:												[ ]	
 -------------------------------------------------------------------------------------
 	OPERADORES UNARIOS (++, --, etc.)				[ ]
-	OPERADORES ARITMÉTICOS Y ASIGNACIÓN (+:=,-:=)	[ ]
+	OPERADORES ARITMÉTICOS Y ASIGNACIÓN (+:=,-:=)	[Y]
 	OPERADOR ALTERNATIVA (?)						[ ]
 	OTROS: (ejemplo: hacer ... mientras)			[Y]

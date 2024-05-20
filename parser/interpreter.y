@@ -144,7 +144,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 %type <stmts> stmtlist
 
-%type <st> stmt asgn print read read_string if while repeat for switch clear place do_while
+%type <st> stmt asgn print read read_string if while repeat for switch clear place do_while plusasgn minusasgn
 
 %type <prog> program
 
@@ -160,7 +160,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 %token READ READ_STRING PRINT IF THEN ELSE END_IF WHILE DO END_WHILE REPEAT UNTIL FOR END_FOR FROM STEP SWITCH CASE DEFAULT END_SWITCH
 
-%right ASSIGNMENT
+%right ASSIGNMENT PLUSASSIGNMENT MINUSASSIGNMENT
 
 %token COMMA
 
@@ -187,9 +187,11 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %left NOT
 /*******************************************************/
 
-%left PLUS MINUS 
+%left PLUS MINUS
 
 %left MULTIPLICATION DIVISION INT_DIVISION MODULE CONCAT
+
+%left PLUSPLUS MINUSMINUS
 
 %left LPAREN RPAREN
 
@@ -327,6 +329,18 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		// Default action
 		// $$ = $1;
 	 }
+
+	| plusasgn SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
+
+	| minusasgn SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
 ;
 
 controlSymbol:  /* Epsilon rule*/
@@ -441,6 +455,55 @@ asgn:   VARIABLE ASSIGNMENT exp
  			execerror("Semantic error in assignment: it is not allowed to modify a constant ", $1);
 		}
 	| CONSTANT ASSIGNMENT asgn 
+		{   
+ 			execerror("Semantic error in multiple assignment: it is not allowed to modify a constant ",$1);
+		}
+	
+	| VARIABLE ASSIGNMENT exp PLUSPLUS
+		{
+			$$ = new lp::AssignmentStmt($1, new lp::PlusPlusNode($3));
+		}
+;
+
+plusasgn: VARIABLE PLUSASSIGNMENT exp 
+		{ 
+			// Create a new assignment node
+			$$ = new lp::PlusAssignmentStmt($1, $3);
+		}
+
+	|  VARIABLE PLUSASSIGNMENT plusasgn 
+		{ 
+			// Create a new assignment node
+			$$ = new lp::PlusAssignmentStmt($1, (lp::PlusAssignmentStmt *) $3);
+		}
+
+	| CONSTANT PLUSASSIGNMENT exp 
+		{   
+ 			execerror("Semantic error in assignment: it is not allowed to modify a constant ", $1);
+		}
+	| CONSTANT PLUSASSIGNMENT plusasgn 
+		{   
+ 			execerror("Semantic error in multiple assignment: it is not allowed to modify a constant ",$1);
+		}
+;
+
+minusasgn: VARIABLE MINUSASSIGNMENT exp 
+		{ 
+			// Create a new assignment node
+			$$ = new lp::MinusAssignmentStmt($1, $3);
+		}
+
+	|  VARIABLE MINUSASSIGNMENT minusasgn 
+		{ 
+			// Create a new assignment node
+			$$ = new lp::MinusAssignmentStmt($1, (lp::MinusAssignmentStmt *) $3);
+		}
+
+	| CONSTANT MINUSASSIGNMENT exp 
+		{   
+ 			execerror("Semantic error in assignment: it is not allowed to modify a constant ", $1);
+		}
+	| CONSTANT MINUSASSIGNMENT minusasgn 
 		{   
  			execerror("Semantic error in multiple assignment: it is not allowed to modify a constant ",$1);
 		}
@@ -567,7 +630,17 @@ exp:	NUMBER
   		  $$ = new lp::PowerNode($1, $3);
 		}
 
-	 |	VARIABLE
+	/* |  	exp PLUSPLUS %prec UNARY
+		{
+			$$ = new lp::PlusPlusNode($1);
+		} */
+
+	|  	exp MINUSMINUS %prec UNARY
+		{
+			$$ = new lp::MinusMinusNode($1);
+		}
+
+	|	VARIABLE
 		{
 		  // Create a new variable node	
 		  $$ = new lp::VariableNode($1);
