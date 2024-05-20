@@ -144,7 +144,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 %type <stmts> stmtlist
 
-%type <st> stmt asgn print read read_string if while repeat for switch clear place
+%type <st> stmt asgn print read read_string if while repeat for switch clear place do_while
 
 %type <prog> program
 
@@ -321,6 +321,12 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		// Default action
 		// $$ = $1;
 	 }
+
+	| do_while SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
 ;
 
 controlSymbol:  /* Epsilon rule*/
@@ -482,6 +488,13 @@ place: PLACE LPAREN exp COMMA exp RPAREN
 			$$ = new lp::PlaceStmt($3, $5);
 		}
 ;
+
+do_while: DO stmtlist WHILE controlSymbol cond
+	{
+		$$ = new lp::DoWhileStmt(new lp::BlockStmt($2), $5);
+
+		control--;
+	}
 
 exp:	NUMBER 
 		{ 

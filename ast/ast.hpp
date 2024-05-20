@@ -2201,6 +2201,49 @@ class PlaceStmt: public Statement
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!	
+  \class   DoWhileStmt
+  \brief   Definition of atributes and methods of DoWhileStmt class
+  \note    DoWhileStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
+class DoWhileStmt : public Statement
+{
+	private:
+  		Statement *_stmt; //!< Statement of the body of the repeat loop
+		ExpNode *_cond; //!< Condition of the repeat statement
+	
+	public:
+	/*!		
+		\brief Constructor of  DoWhileStmt
+		\param statement: Statement of the body of the loop 
+		\param condition: ExpNode of the condition
+		\post  A new DoWhileStmt is created with the parameters
+	*/
+	DoWhileStmt(Statement *statement, ExpNode *condition)
+	{
+		this->_stmt = statement;
+		this->_cond = condition;
+	}
+
+	/*!
+		\brief   Print the AST for DoWhileStmt
+		\return  void
+		\sa		   evaluate
+	*/
+	void printAST();
+
+	/*!	
+		\brief   Evaluate the DoWhileStmt
+		\return  void
+		\sa	   	 printAST
+	*/
+	void evaluate();
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!	
   \class   BlockStmt
   \brief   Definition of atributes and methods of BlockStmt class
   \note    BlockStmt Class publicly inherits from Statement class 

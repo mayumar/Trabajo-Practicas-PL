@@ -1807,10 +1807,33 @@ void lp::PlaceStmt::evaluate(){
 	PLACE((int)this->_exp1->evaluateNumber(), (int)this->_exp2->evaluateNumber());
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::DoWhileStmt::printAST() 
+{
+	std::cout << "DoWhileStmt: "  << std::endl;
+	// Condition
+	std::cout << "\t";
+	this->_cond->printAST();
+
+	// Body of the repeat loop
+	std::cout << "\t";
+	this->_stmt->printAST();
+
+	std::cout << std::endl;
+}
+
+void lp::DoWhileStmt::evaluate()
+{
+	do {
+		this->_stmt->evaluate();
+	} while(this->_cond->evaluateBool());
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// NEW in example 17
 
 void lp::BlockStmt::printAST() 
 {

@@ -62,7 +62,7 @@ NUMBER [+\-]?{DIGIT}+(\.{DIGIT}+)?((E|e)[+\-]?{DIGIT}+)?
 
 IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 
-STRING \'([^'\\]|\\.)*\'
+CADENA \'([^'\\]|\\.)*\'
 
 /* STATE  */
 %x ERROR COMMENT
@@ -95,7 +95,7 @@ STRING \'([^'\\]|\\.)*\'
 						return NUMBER; 
                       }
 
-{STRING} 			  {
+{CADENA} 			  {
 						/* Remove quotation marks */
 						yytext[yyleng-1] = '\0';
 						yytext++;
