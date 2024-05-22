@@ -62,7 +62,7 @@ NUMBER [+\-]?{DIGIT}+(\.{DIGIT}+)?((E|e)[+\-]?{DIGIT}+)?
 
 IDENTIFIER {CHAR}({CHAR}|{DIGIT}|\_({CHAR}|{DIGIT}))*
 
-STRING \'([^'\\]|\\.)*\'
+CADENA \'([^'\\]|\\.)*\'
 
 /* STATE  */
 %x ERROR COMMENT
@@ -95,7 +95,7 @@ STRING \'([^'\\]|\\.)*\'
 						return NUMBER; 
                       }
 
-{STRING} 			  {
+{CADENA} 			  {
 						/* Remove quotation marks */
 						yytext[yyleng-1] = '\0';
 						yytext++;
@@ -152,6 +152,8 @@ STRING \'([^'\\]|\\.)*\'
                      }
 
 ":="    { return ASSIGNMENT; }
+"+:="	{ return PLUSASSIGNMENT; }
+"-:="	{ return MINUSASSIGNMENT; }
 
 "-"     { return MINUS;  } 	
 "+"	    { return PLUS;   } 	
@@ -160,6 +162,8 @@ STRING \'([^'\\]|\\.)*\'
 "//"    { return INT_DIVISION; }
 "%"     { return MODULE; }
 "**"    { return POWER; }
+"++"	{ return PLUSPLUS; }
+"--"	{ return MINUSMINUS;}
  
 "||"    { return CONCAT; }
 

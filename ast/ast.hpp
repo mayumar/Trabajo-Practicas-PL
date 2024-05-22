@@ -300,6 +300,98 @@ class StringNode : public ExpNode
 	std::string evaluateString();
 };
 
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   PlusPlusNode
+  \brief   Definition of atributes and methods of PlusPlusNode class
+  \note    PlusPlusNode Class publicly inherits from ExpNode class
+*/
+class PlusPlusNode : public ExpNode 
+{
+
+ public:
+	std::string _id;
+
+/*!		
+	\brief Constructor of PlusPlusNode uses ExpNode's constructor as member initializer
+	\param id: std::string
+	\post  A new PlusPlusNode is created with the parameter
+*/
+  PlusPlusNode(std::string id)
+	{
+		this->_id = id;
+	} 
+
+/*!	
+	\brief   Get the type of the expression: STRING
+	\return  int
+	\sa		   printAST, evaluateString
+	*/
+	int getType();
+
+/*!
+	\brief   Print the AST for expression
+	\return  void
+	\sa		   evaluateNumber
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the expression
+	\return  double
+	\sa		   printAST
+*/
+  double evaluateNumber();
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   MinusMinusNode
+  \brief   Definition of atributes and methods of MinusMinusNode class
+  \note    MinusMinusNode Class publicly inherits from ExpNode class
+*/
+class MinusMinusNode : public ExpNode 
+{
+
+ public:
+	std::string _id;
+
+/*!		
+	\brief Constructor of MinusMinusNode uses ExpNode's constructor as member initializer
+	\param id: std::string
+	\post  A new MinusMinusNode is created with the parameter
+*/
+  MinusMinusNode(std::string id)
+	{
+		this->_id = id;
+	} 
+
+/*!	
+	\brief   Get the type of the expression: STRING
+	\return  int
+	\sa		   printAST, evaluateString
+	*/
+	int getType();
+
+/*!
+	\brief   Print the AST for expression
+	\return  void
+	\sa		   evaluateNumber
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the expression
+	\return  double
+	\sa		   printAST
+*/
+  double evaluateNumber();
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -485,6 +577,7 @@ class UnaryPlusNode : public NumericUnaryOperatorNode
 */
   double evaluateNumber();
 };
+
 
 
 
@@ -1611,6 +1704,100 @@ class AssignmentStmt : public Statement
 
 };
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/*!	
+  \class   PlusAssignmentStmt
+  \brief   Definition of atributes and methods of PlusAssignmentStmt class
+  \note    PlusAssignmentStmt Class publicly inherits from Statement class 
+		   and adds its own printAST and evaluate functions
+*/
+class PlusAssignmentStmt : public Statement 
+{
+ private:
+  std::string _id; //!< Name of the variable of the assignment statement
+  ExpNode *_exp; 	 //!< Expresssion the assignment statement
+
+ public:
+
+/*!		
+	\brief Constructor of PlusAssignmentStmt 
+	\param id: string, variable of the PlusAssignmentStmt
+	\param expression: pointer to ExpNode
+	\post  A new PlusAssignmentStmt is created with the parameters
+*/
+  PlusAssignmentStmt(std::string id, ExpNode *expression): _id(id), _exp(expression)
+	{
+		// empty
+	}
+
+
+/*!
+	\brief   Print the AST for PlusAssignmentStmt
+	\return  void
+	\sa		   evaluate
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the PlusAssignmentStmt
+	\return  void
+	\sa		   printAST
+*/
+    void evaluate();
+
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/*!	
+  \class   MinusAssignmentStmt
+  \brief   Definition of atributes and methods of MinusAssignmentStmt class
+  \note    MinusAssignmentStmt Class publicly inherits from Statement class 
+		   and adds its own printAST and evaluate functions
+*/
+class MinusAssignmentStmt : public Statement 
+{
+ private:
+  std::string _id; //!< Name of the variable of the assignment statement
+  ExpNode *_exp; 	 //!< Expresssion the assignment statement
+
+ public:
+
+/*!		
+	\brief Constructor of MinusAssignmentStmt 
+	\param id: string, variable of the MinusAssignmentStmt
+	\param expression: pointer to ExpNode
+	\post  A new MinusAssignmentStmt is created with the parameters
+*/
+  MinusAssignmentStmt(std::string id, ExpNode *expression): _id(id), _exp(expression)
+	{
+		// empty
+	}
+
+
+/*!
+	\brief   Print the AST for MinusAssignmentStmt
+	\return  void
+	\sa		   evaluate
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the MinusAssignmentStmt
+	\return  void
+	\sa		   printAST
+*/
+    void evaluate();
+
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2191,6 +2378,129 @@ class PlaceStmt: public Statement
 
 /*!	
 	\brief   Evaluate the PlaceStmt
+	\return  void
+	\sa		   printAST
+*/
+  void evaluate();
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   DoWhileStmt
+  \brief   Definition of atributes and methods of DoWhileStmt class
+  \note    DoWhileStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
+class DoWhileStmt : public Statement
+{
+	private:
+  		Statement *_stmt; //!< Statement of the body of the repeat loop
+		ExpNode *_cond; //!< Condition of the repeat statement
+	
+	public:
+	/*!		
+		\brief Constructor of  DoWhileStmt
+		\param statement: Statement of the body of the loop 
+		\param condition: ExpNode of the condition
+		\post  A new DoWhileStmt is created with the parameters
+	*/
+	DoWhileStmt(Statement *statement, ExpNode *condition)
+	{
+		this->_stmt = statement;
+		this->_cond = condition;
+	}
+
+	/*!
+		\brief   Print the AST for DoWhileStmt
+		\return  void
+		\sa		   evaluate
+	*/
+	void printAST();
+
+	/*!	
+		\brief   Evaluate the DoWhileStmt
+		\return  void
+		\sa	   	 printAST
+	*/
+	void evaluate();
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   PlusPlusStmt
+  \brief   Definition of atributes and methods of PlusPlusStmt class
+  \note    PlusPlusStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
+class PlusPlusStmt : public Statement 
+{
+
+ public:
+	std::string _id; //!< Id variable to increment
+
+/*!		
+	\brief Constructor of PlusPlusStmt
+	\param id: std::string
+	\post  A new PlusPlusStmt is created with the parameter
+*/
+  PlusPlusStmt(std::string id) 
+	{
+		this->_id = id;
+	} 
+
+/*!
+	\brief   Print the AST for expression
+	\return  void
+	\sa		   evaluate
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the expression
+	\return  void
+	\sa		   printAST
+*/
+  void evaluate();
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   MinusMinusStmt
+  \brief   Definition of atributes and methods of MinusMinusStmt class
+  \note    MinusMinusStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
+class MinusMinusStmt : public Statement 
+{
+
+ public:
+	std::string _id; //!< Id variable to increment
+
+/*!		
+	\brief Constructor of MinusMinusStmt
+	\param id: std::string
+	\post  A new MinusMinusStmt is created with the parameter
+*/
+  MinusMinusStmt(std::string id) 
+	{
+		this->_id = id;
+	} 
+
+/*!
+	\brief   Print the AST for expression
+	\return  void
+	\sa		   evaluate
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the expression
 	\return  void
 	\sa		   printAST
 */

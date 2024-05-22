@@ -237,14 +237,14 @@ DE EJECUCIÓN										[Y]
 MODOS DE EJECUCIÓN:										[Y]	
 -----------------------------------------------------------------------------------
 	INTERACTIVO										[Y]
-	DESDE FICHERO								[Y]
+	DESDE FICHERO									[Y]
 
 
 														CONTROL		FECHA
 -------------------------------------------------------------------------------------
 OPCIONALES:												[ ]	
 -------------------------------------------------------------------------------------
-	OPERADORES UNARIOS (++, --, etc.)				[ ]
-	OPERADORES ARITMÉTICOS Y ASIGNACIÓN (+:=,-:=)	[ ]
+	OPERADORES UNARIOS (++, --, etc.)				[Y]
+	OPERADORES ARITMÉTICOS Y ASIGNACIÓN (+:=,-:=)	[Y]
 	OPERADOR ALTERNATIVA (?)						[ ]
-	OTROS: (ejemplo: hacer ... mientras)			[ ]
+	OTROS: (ejemplo: hacer ... mientras)			[Y]

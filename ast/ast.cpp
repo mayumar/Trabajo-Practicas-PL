@@ -271,6 +271,69 @@ std::string lp::StringNode::evaluateString()
     return processedValue; 
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+int lp::PlusPlusNode::getType(){
+	return NUMBER;
+}
+
+
+void lp::PlusPlusNode::printAST() 
+{
+  std::cout << "PlusPlusNode: ++"  << std::endl;
+  std::cout << "\t" << this->_id << std::endl;
+}
+
+double lp::PlusPlusNode::evaluateNumber()
+{
+	lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol(this->_id);
+
+	// Ckeck the type of the expression
+	if (n->getType() == NUMBER)
+	{
+		n->setValue(n->getValue() + 1);
+	}
+	else
+	{
+		warning("Runtime error: the expressions are not numeric for ","PlusPlus");
+	}
+
+  return n->getValue();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+int lp::MinusMinusNode::getType(){
+	return NUMBER;
+}
+
+void lp::MinusMinusNode::printAST() 
+{
+  std::cout << "MinusMinusNode: --"  << std::endl;
+  std::cout << "\t" << this->_id << std::endl;
+}
+
+double lp::MinusMinusNode::evaluateNumber()
+{
+	lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol(this->_id);
+
+	// Ckeck the type of the expression
+	if (n->getType() == NUMBER)
+	{
+		n->setValue(n->getValue() - 1);
+	}
+	else
+	{
+		warning("Runtime error: the expressions are not numeric for ","MinusMinus");
+	}
+
+  return n->getValue();
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1412,6 +1475,144 @@ void lp::AssignmentStmt::evaluate()
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+void lp::PlusAssignmentStmt::printAST() 
+{
+  std::cout << "plus_assignment_node: +:="  << std::endl;
+  std::cout << "\t";
+  std::cout << this->_id << std::endl;
+  std::cout << "\t";
+
+  // Check the expression
+	if (this->_exp != NULL)
+	{
+		this->_exp->printAST();
+    	std::cout << std::endl;
+  	}
+
+}
+
+void lp::PlusAssignmentStmt::evaluate() 
+{
+	/* Get the identifier in the table of symbols as Variable */
+	/* 
+		a += 2;
+
+		a: firstVar
+	*/
+	lp::Variable *firstVar = (lp::Variable *) table.getSymbol(this->_id);
+
+	// Check the expression
+	if (this->_exp != NULL)
+	{
+		if(this->_exp->getType() == NUMBER)
+		{
+			double value;
+			// evaluate the expression as NUMBER
+			value = this->_exp->evaluateNumber();
+			value += value;
+
+			// Check the type of the first varible
+			if (firstVar->getType() == NUMBER)
+			{
+				// Get the identifier in the table of symbols as NumericVariable
+				lp::NumericVariable *v = (lp::NumericVariable *) table.getSymbol(this->_id);
+
+				// Assignment the value to the identifier in the table of symbols
+				v->setValue(value);
+			}
+			// The type of variable is not NUMBER
+			else
+			{
+				// Delete the variable from the table of symbols 
+				table.eraseSymbol(this->_id);
+
+				// Insert the variable in the table of symbols as NumericVariable 
+				// with the type NUMBER and the value 
+				lp::NumericVariable *v = new lp::NumericVariable(this->_id,
+										VARIABLE,NUMBER,value);
+				table.installSymbol(v);
+			}
+		}
+		else
+		{
+			warning("Runtime error: incompatible type of expression for ", "PlusAssigment");
+		}
+	}
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::MinusAssignmentStmt::printAST() 
+{
+  std::cout << "plus_assignment_node: -:="  << std::endl;
+  std::cout << "\t";
+  std::cout << this->_id << std::endl;
+  std::cout << "\t";
+
+  // Check the expression
+	if (this->_exp != NULL)
+	{
+		this->_exp->printAST();
+    	std::cout << std::endl;
+  	}
+
+}
+
+void lp::MinusAssignmentStmt::evaluate() 
+{
+	/* Get the identifier in the table of symbols as Variable */
+	/* 
+		a -= 2;
+
+		a: firstVar
+	*/
+	lp::Variable *firstVar = (lp::Variable *) table.getSymbol(this->_id);
+
+	// Check the expression
+	if (this->_exp != NULL)
+	{
+		if(this->_exp->getType() == NUMBER)
+		{
+			double value;
+			// evaluate the expression as NUMBER
+			value = this->_exp->evaluateNumber();
+			value -= value;
+
+			// Check the type of the first varible
+			if (firstVar->getType() == NUMBER)
+			{
+				// Get the identifier in the table of symbols as NumericVariable
+				lp::NumericVariable *v = (lp::NumericVariable *) table.getSymbol(this->_id);
+
+				// Assignment the value to the identifier in the table of symbols
+				v->setValue(value);
+			}
+			// The type of variable is not NUMBER
+			else
+			{
+				// Delete the variable from the table of symbols 
+				table.eraseSymbol(this->_id);
+
+				// Insert the variable in the table of symbols as NumericVariable 
+				// with the type NUMBER and the value 
+				lp::NumericVariable *v = new lp::NumericVariable(this->_id,
+										VARIABLE,NUMBER,value);
+				table.installSymbol(v);
+			}
+		}
+		else
+		{
+			warning("Runtime error: incompatible type of expression for ", "PlusAssigment");
+		}
+	}
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 void lp::PrintStmt::printAST() 
 {
   std::cout << "printASTStmt: printAST"  << std::endl;
@@ -1804,10 +2005,87 @@ void lp::PlaceStmt::evaluate(){
 	PLACE((int)this->_exp1->evaluateNumber(), (int)this->_exp2->evaluateNumber());
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::DoWhileStmt::printAST() 
+{
+	std::cout << "DoWhileStmt: "  << std::endl;
+	// Condition
+	std::cout << "\t";
+	this->_cond->printAST();
+
+	// Body of the repeat loop
+	std::cout << "\t";
+	this->_stmt->printAST();
+
+	std::cout << std::endl;
+}
+
+void lp::DoWhileStmt::evaluate()
+{
+	do {
+		this->_stmt->evaluate();
+	} while(this->_cond->evaluateBool());
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// NEW in example 17
+
+
+void lp::PlusPlusStmt::printAST() 
+{
+  std::cout << "PlusPlusStmt: ++"  << std::endl;
+  std::cout << "\t" << this->_id << std::endl << std::endl;
+}
+
+void lp::PlusPlusStmt::evaluate()
+{
+	lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol(this->_id);
+
+	// Ckeck the type of the expression
+	if (n->getType() == NUMBER)
+	{
+		n->setValue(n->getValue() + 1);
+	}
+	else
+	{
+		warning("Runtime error: the expressions are not numeric for ","PlusPlus");
+	}
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void lp::MinusMinusStmt::printAST() 
+{
+  std::cout << "MinusMinusStmt: ++"  << std::endl;
+  std::cout << "\t" << this->_id << std::endl << std::endl;
+}
+
+void lp::MinusMinusStmt::evaluate()
+{
+	lp::NumericVariable *n = (lp::NumericVariable *) table.getSymbol(this->_id);
+
+	// Ckeck the type of the expression
+	if (n->getType() == NUMBER)
+	{
+		n->setValue(n->getValue() - 1);
+	}
+	else
+	{
+		warning("Runtime error: the expressions are not numeric for ","PlusPlus");
+	}
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 void lp::BlockStmt::printAST() 
 {

@@ -144,7 +144,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 %type <stmts> stmtlist
 
-%type <st> stmt asgn print read read_string if while repeat for switch clear place
+%type <st> stmt asgn print read read_string if while repeat for switch clear place do_while plusasgn minusasgn plusplus minusminus
 
 %type <prog> program
 
@@ -160,7 +160,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 %token READ READ_STRING PRINT IF THEN ELSE END_IF WHILE DO END_WHILE REPEAT UNTIL FOR END_FOR FROM STEP SWITCH CASE DEFAULT END_SWITCH
 
-%right ASSIGNMENT
+%right ASSIGNMENT PLUSASSIGNMENT MINUSASSIGNMENT
 
 %token COMMA
 
@@ -187,9 +187,11 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %left NOT
 /*******************************************************/
 
-%left PLUS MINUS 
+%left PLUS MINUS
 
 %left MULTIPLICATION DIVISION INT_DIVISION MODULE CONCAT
+
+%left PLUSPLUS MINUSMINUS
 
 %left LPAREN RPAREN
 
@@ -321,6 +323,36 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		// Default action
 		// $$ = $1;
 	 }
+
+	| do_while SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
+
+	| plusasgn SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
+
+	| minusasgn SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
+
+	| plusplus SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
+
+	| minusminus SEMICOLON
+	 {
+		// Default action
+		// $$ = $1;
+	 }
 ;
 
 controlSymbol:  /* Epsilon rule*/
@@ -440,6 +472,30 @@ asgn:   VARIABLE ASSIGNMENT exp
 		}
 ;
 
+plusasgn: VARIABLE PLUSASSIGNMENT exp 
+		{ 
+			// Create a new assignment node
+			$$ = new lp::PlusAssignmentStmt($1, $3);
+		}
+
+	| CONSTANT PLUSASSIGNMENT exp 
+		{   
+ 			execerror("Semantic error in assignment: it is not allowed to modify a constant ", $1);
+		}
+;
+
+minusasgn: VARIABLE MINUSASSIGNMENT exp 
+		{ 
+			// Create a new assignment node
+			$$ = new lp::MinusAssignmentStmt($1, $3);
+		}
+
+	| CONSTANT MINUSASSIGNMENT exp 
+		{   
+ 			execerror("Semantic error in assignment: it is not allowed to modify a constant ", $1);
+		}
+;
+
 print:  PRINT LPAREN exp RPAREN
 		{
 			// Create a new print node
@@ -481,6 +537,26 @@ place: PLACE LPAREN exp COMMA exp RPAREN
 		{
 			$$ = new lp::PlaceStmt($3, $5);
 		}
+;
+
+do_while: DO stmtlist WHILE controlSymbol cond
+	{
+		$$ = new lp::DoWhileStmt(new lp::BlockStmt($2), $5);
+
+		control--;
+	}
+;
+
+plusplus: VARIABLE PLUSPLUS %prec UNARY
+	{
+		$$ = new lp::PlusPlusStmt($1);
+	}
+;
+
+minusminus: VARIABLE MINUSMINUS %prec UNARY
+	{
+		$$ = new lp::MinusMinusStmt($1);
+	}
 ;
 
 exp:	NUMBER 
@@ -554,7 +630,17 @@ exp:	NUMBER
   		  $$ = new lp::PowerNode($1, $3);
 		}
 
-	 |	VARIABLE
+	|  	VARIABLE PLUSPLUS %prec UNARY
+		{
+			$$ = new lp::PlusPlusNode($1);
+		}
+
+	|  	VARIABLE MINUSMINUS %prec UNARY
+		{
+			$$ = new lp::MinusMinusNode($1);
+		}
+
+	|	VARIABLE
 		{
 		  // Create a new variable node	
 		  $$ = new lp::VariableNode($1);
