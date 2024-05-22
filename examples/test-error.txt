@@ -1,8 +1,0 @@
-escribir('Escriba un numero: ');
-leer(dato);
-
-si (dato = 1) entonces  
-  escribir('\n' || dato);
-si_no
-  escribir('No es 1\n');
-fin_si;
