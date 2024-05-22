@@ -179,6 +179,8 @@ CADENA \'([^'\\]|\\.)*\'
 
 ":"		{ return COLON; }
 
+"?"		{ return TERNARY; }
+
 "#y"	{ return AND; }
 "#o"	{ return OR; }
 "#no"	{ return NOT; }
