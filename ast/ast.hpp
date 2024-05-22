@@ -300,6 +300,98 @@ class StringNode : public ExpNode
 	std::string evaluateString();
 };
 
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   PlusPlusNode
+  \brief   Definition of atributes and methods of PlusPlusNode class
+  \note    PlusPlusNode Class publicly inherits from ExpNode class
+*/
+class PlusPlusNode : public ExpNode 
+{
+
+ public:
+	std::string _id;
+
+/*!		
+	\brief Constructor of PlusPlusNode uses ExpNode's constructor as member initializer
+	\param id: std::string
+	\post  A new PlusPlusNode is created with the parameter
+*/
+  PlusPlusNode(std::string id)
+	{
+		this->_id = id;
+	} 
+
+/*!	
+	\brief   Get the type of the expression: STRING
+	\return  int
+	\sa		   printAST, evaluateString
+	*/
+	int getType();
+
+/*!
+	\brief   Print the AST for expression
+	\return  void
+	\sa		   evaluateNumber
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the expression
+	\return  double
+	\sa		   printAST
+*/
+  double evaluateNumber();
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   MinusMinusNode
+  \brief   Definition of atributes and methods of MinusMinusNode class
+  \note    MinusMinusNode Class publicly inherits from ExpNode class
+*/
+class MinusMinusNode : public ExpNode 
+{
+
+ public:
+	std::string _id;
+
+/*!		
+	\brief Constructor of MinusMinusNode uses ExpNode's constructor as member initializer
+	\param id: std::string
+	\post  A new MinusMinusNode is created with the parameter
+*/
+  MinusMinusNode(std::string id)
+	{
+		this->_id = id;
+	} 
+
+/*!	
+	\brief   Get the type of the expression: STRING
+	\return  int
+	\sa		   printAST, evaluateString
+	*/
+	int getType();
+
+/*!
+	\brief   Print the AST for expression
+	\return  void
+	\sa		   evaluateNumber
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the expression
+	\return  double
+	\sa		   printAST
+*/
+  double evaluateNumber();
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -467,82 +559,6 @@ class UnaryPlusNode : public NumericUnaryOperatorNode
 	\post  A new UnaryPlusNode is created with the parameter
 */
   UnaryPlusNode(ExpNode *expression): NumericUnaryOperatorNode(expression) 
-	{
-		// empty
-	} 
-
-/*!
-	\brief   Print the AST for expression
-	\return  void
-	\sa		   evaluateNumber
-*/
-  void printAST();
-
-/*!	
-	\brief   Evaluate the expression
-	\return  double
-	\sa		   printAST
-*/
-  double evaluateNumber();
-};
-
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-
-/*!	
-  \class   PlusPlusNode
-  \brief   Definition of atributes and methods of PlusPlusNode class
-  \note    PlusPlusNode Class publicly inherits from NumericUnaryOperatorNode class
-*/
-class PlusPlusNode : public NumericUnaryOperatorNode 
-{
-
- public:
-
-/*!		
-	\brief Constructor of PlusPlusNode uses NumericUnaryOperatorNode's constructor as member initializer
-	\param expression: pointer to ExpNode
-	\post  A new PlusPlusNode is created with the parameter
-*/
-  PlusPlusNode(ExpNode *expression): NumericUnaryOperatorNode(expression) 
-	{
-		// empty
-	} 
-
-/*!
-	\brief   Print the AST for expression
-	\return  void
-	\sa		   evaluateNumber
-*/
-  void printAST();
-
-/*!	
-	\brief   Evaluate the expression
-	\return  double
-	\sa		   printAST
-*/
-  double evaluateNumber();
-};
-
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-
-/*!	
-  \class   MinusMinusNode
-  \brief   Definition of atributes and methods of MinusMinusNode class
-  \note    MinusMinusNode Class publicly inherits from NumericUnaryOperatorNode class
-*/
-class MinusMinusNode : public NumericUnaryOperatorNode 
-{
-
- public:
-
-/*!		
-	\brief Constructor of MinusMinusNode uses NumericUnaryOperatorNode's constructor as member initializer
-	\param expression: pointer to ExpNode
-	\post  A new MinusMinusNode is created with the parameter
-*/
-  MinusMinusNode(ExpNode *expression): NumericUnaryOperatorNode(expression) 
 	{
 		// empty
 	} 
@@ -1705,8 +1721,6 @@ class PlusAssignmentStmt : public Statement
   std::string _id; //!< Name of the variable of the assignment statement
   ExpNode *_exp; 	 //!< Expresssion the assignment statement
 
-  PlusAssignmentStmt *_asgn;  //!< Allow multiple assigment -> a = b = 2 
-
  public:
 
 /*!		
@@ -1717,20 +1731,7 @@ class PlusAssignmentStmt : public Statement
 */
   PlusAssignmentStmt(std::string id, ExpNode *expression): _id(id), _exp(expression)
 	{
-		this->_asgn = NULL; 
-	}
-
-/*!		
-	\brief Constructor of PlusAssignmentStmt 
-	\param id: string, variable of the PlusAssignmentStmt
-	\param asgn: pointer to PlusAssignmentStmt
-	\post  A new PlusAssignmentStmt is created with the parameters
-	\note  Allow multiple assigment -> a = b = 2 
-*/
-
-  PlusAssignmentStmt(std::string id, PlusAssignmentStmt *asgn): _id(id), _asgn(asgn)
-	{
-		this->_exp = NULL;
+		// empty
 	}
 
 
@@ -1767,8 +1768,6 @@ class MinusAssignmentStmt : public Statement
   std::string _id; //!< Name of the variable of the assignment statement
   ExpNode *_exp; 	 //!< Expresssion the assignment statement
 
-  MinusAssignmentStmt *_asgn;  //!< Allow multiple assigment -> a = b = 2 
-
  public:
 
 /*!		
@@ -1779,20 +1778,7 @@ class MinusAssignmentStmt : public Statement
 */
   MinusAssignmentStmt(std::string id, ExpNode *expression): _id(id), _exp(expression)
 	{
-		this->_asgn = NULL; 
-	}
-
-/*!		
-	\brief Constructor of MinusAssignmentStmt 
-	\param id: string, variable of the MinusAssignmentStmt
-	\param asgn: pointer to MinusAssignmentStmt
-	\post  A new MinusAssignmentStmt is created with the parameters
-	\note  Allow multiple assigment -> a = b = 2 
-*/
-
-  MinusAssignmentStmt(std::string id, MinusAssignmentStmt *asgn): _id(id), _asgn(asgn)
-	{
-		this->_exp = NULL;
+		// empty
 	}
 
 
@@ -2439,6 +2425,86 @@ class DoWhileStmt : public Statement
 		\sa	   	 printAST
 	*/
 	void evaluate();
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   PlusPlusStmt
+  \brief   Definition of atributes and methods of PlusPlusStmt class
+  \note    PlusPlusStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
+class PlusPlusStmt : public Statement 
+{
+
+ public:
+	std::string _id; //!< Id variable to increment
+
+/*!		
+	\brief Constructor of PlusPlusStmt
+	\param id: std::string
+	\post  A new PlusPlusStmt is created with the parameter
+*/
+  PlusPlusStmt(std::string id) 
+	{
+		this->_id = id;
+	} 
+
+/*!
+	\brief   Print the AST for expression
+	\return  void
+	\sa		   evaluate
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the expression
+	\return  void
+	\sa		   printAST
+*/
+  void evaluate();
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   MinusMinusStmt
+  \brief   Definition of atributes and methods of MinusMinusStmt class
+  \note    MinusMinusStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
+class MinusMinusStmt : public Statement 
+{
+
+ public:
+	std::string _id; //!< Id variable to increment
+
+/*!		
+	\brief Constructor of MinusMinusStmt
+	\param id: std::string
+	\post  A new MinusMinusStmt is created with the parameter
+*/
+  MinusMinusStmt(std::string id) 
+	{
+		this->_id = id;
+	} 
+
+/*!
+	\brief   Print the AST for expression
+	\return  void
+	\sa		   evaluate
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the expression
+	\return  void
+	\sa		   printAST
+*/
+  void evaluate();
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
