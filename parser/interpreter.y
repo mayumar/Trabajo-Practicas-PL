@@ -432,7 +432,7 @@ asgn:   VARIABLE ASSIGNMENT exp
 
 	| CONSTANT ASSIGNMENT exp 
 		{   
- 			execerror("Error semántico en la asignación: no está permitido modificar una constante ", $1);
+ 			execerror("Error semántico en asignación: no está permitido modificar una constante ", $1);
 		}
 	| CONSTANT ASSIGNMENT asgn 
 		{   

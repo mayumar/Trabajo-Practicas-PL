@@ -101,7 +101,20 @@ int main(int argc, char *argv[])
  */
  if (argc == 2) 
  {
+     std::string filename = argv[1];
+     std::string ext = filename.substr(filename.size()-2);
      yyin = fopen(argv[1],"r");
+
+     if (yyin == NULL)
+     {
+        warning("Error de fichero:", "el fichero no existe");
+        return -1;
+     }
+     else if (ext != ".e")
+     {
+        warning("Error de fichero:", "extension de fichero incorrecta, debe ser '.e'");
+        return -1;
+     }
 
 	 interactiveMode = false;
  }

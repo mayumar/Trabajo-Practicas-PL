@@ -44,7 +44,7 @@ void warning(std::string errorMessage1,std::string errorMessage2)
 
 
   if (errorMessage2.compare("")!=0)
-		 std::cerr << "\t" << errorMessage2 << std::endl;
+		 std::cerr << errorMessage2 << std::endl;
 }
 
 void yyerror(std::string errorMessage)
@@ -56,8 +56,9 @@ void yyerror(std::string errorMessage)
 
 void execerror(std::string errorMessage1,std::string errorMessage2)
 {
- warning(errorMessage1,errorMessage2); 
- longjmp(begin,0); /* return to a viable state */
+  warning(errorMessage1,errorMessage2); 
+  longjmp(begin,0); /* return to a viable state */
+  std::exit(-1);
 }
 
 void fpecatch(int signum)     

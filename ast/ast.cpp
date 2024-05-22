@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string>
 #include <list>
+#include <sstream>
 
 // Para usar la funciones pow y std::abs
 #include <cmath>
@@ -283,7 +284,7 @@ int lp::NumericUnaryOperatorNode::getType()
 	}
 	else
 	{
-		warning("Runtime error: incompatible types for", "Numeric Unary Operator");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ", "operador unario numerico");
 	}
 
 	return result;
@@ -302,7 +303,7 @@ int lp::LogicalUnaryOperatorNode::getType()
 	}
 	else
 	{
-		warning("Runtime error: incompatible types for", "Logical Unary Operator");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ", "operador unario logico");
 	}
 	
 	return result;
@@ -319,7 +320,7 @@ int lp::NumericOperatorNode::getType()
 	if ( (this->_left->getType() == NUMBER) and (this->_right->getType() == NUMBER))
 		result = NUMBER;
 	else
-		warning("Runtime error: incompatible types for", "Numeric Operator");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ", "operador numerico");
 
 	return	result;
 }
@@ -335,7 +336,7 @@ int lp::StringOperatorNode::getType()
 		(this->_left->getType() == NUMBER || this->_right->getType() == STRING))
 		result = STRING;
 	else
-		warning("Runtime error: incompatible types for", "String Operator");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ", "operador de cadena");
 
 	return	result;
 }
@@ -353,7 +354,7 @@ int lp::RelationalOperatorNode::getType()
 	else if ( (this->_left->getType() == BOOL) and (this->_right->getType() == BOOL))
 		result = BOOL;
 	else
-		warning("Runtime error: incompatible types for", "Relational Operator");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ", "operador relacional");
 
 	return	result;
 }
@@ -372,7 +373,7 @@ int lp::LogicalOperatorNode:: getType()
 		result = BOOL;
 	}
 	else
-		warning("Runtime error: incompatible types for", "Logical Operator");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ", "operador logico");
 
 	return	result;
 }
@@ -401,7 +402,7 @@ double lp::UnaryMinusNode::evaluateNumber()
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for ", "UnaryMinus");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ", "resta unaria");
 	}
 
   return result;
@@ -430,7 +431,7 @@ double lp::UnaryPlusNode::evaluateNumber()
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for ","UnaryPlus");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ","suma unaria");
 	}
 
   return result;
@@ -460,7 +461,7 @@ double lp::PlusNode::evaluateNumber()
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for ", "Plus");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ", "suma");
 	}
 
   return result;
@@ -490,7 +491,7 @@ double lp::MinusNode::evaluateNumber()
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for ", "Minus");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ", "resta");
 	}
 
   return result;
@@ -520,7 +521,7 @@ double lp::MultiplicationNode::evaluateNumber()
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for ","Multiplication");
+		warning("Error en tiempo de ejecucion: tipos incompatibles para ","multiplicacion");
 	}
 
   return result;
@@ -559,12 +560,12 @@ double lp::DivisionNode::evaluateNumber()
 		}
 		else
 		{
-			warning("Runtime error", "Division by zero");
+			warning("Error en tiempo de ejecucion", "division entre 0");
 		}
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for", "Division");
+		warning("Error en tiempo de ejecucion: las expresiones no son numericas para ", "division");
 	}
 
   return result;
@@ -601,12 +602,12 @@ double lp::IntDivisionNode::evaluateNumber()
 		}
 		else
 		{
-			warning("Runtime error", "Division by zero");
+			warning("Error en tiempo de ejecucion", "division entre 0");
 		}
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for", "Division");
+		warning("Error en tiempo de ejecucion: las expresiones no son numericas para ", "division entera");
 	}
 
   return result;
@@ -640,11 +641,11 @@ double lp::ModuloNode::evaluateNumber()
     	if(std::abs(rightNumber) > ERROR_BOUND)
 				result = (int) leftNumber % (int) rightNumber;
 		else
-			warning("Runtime error", "Division by zero");
+			warning("Error en tiempo de ejecucion", "division entre 0");
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for", "Modulo");
+		warning("Error en tiempo de ejecucion: las expresiones no son numericas para ", "modulo");
 	}
 
   return result;
@@ -675,7 +676,7 @@ double lp::PowerNode::evaluateNumber()
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for", "Power");
+		warning("Error en tiempo de ejecucion: las expresiones no son numericas para ", "potencia");
 	}
 
   return result;
@@ -697,17 +698,11 @@ std::string lp::ConcatNode::evaluateString()
 {
 	std::string result = "";
 
-	result = this->_left->evaluateString() + this->_right->evaluateString();
-	
 	// Ckeck the types of the expressions
-	
-	// if (this->getType() == STRING or this->getType() == NUMBER)
-	// {
-	// }
-	// else
-	// {
-	// 	warning("Runtime error: the expressions are not strings for ", "Concat");
-	// }
+	if (this->getType() != STRING)
+		warning("Error en tiempo de ejecucion: las expresiones no son cadenas para ", "concatenacion");
+
+	result = this->_left->evaluateString() + this->_right->evaluateString();
 
   return result;
 }
@@ -794,7 +789,7 @@ int lp::BuiltinFunctionNode_2::getType()
 	if (this->_exp1->getType() == this->_exp2->getType())
 		result = this->_exp1->getType();
 	else
-		warning("Runtime error: incompatible types for", "BuiltinFunctionNode_2");
+		warning("Error en tiemo de ejecucion: tipos incompatibles para", "BuiltinFunctionNode_2");
 
 	return	result;
 }
@@ -827,7 +822,7 @@ double lp::BuiltinFunctionNode_2::evaluateNumber()
 	}
 	else
 	{
-		warning("Runtime error: incompatible types of parameters for ", this->_id);
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", this->_id);
 	}
 
   return result;
@@ -861,7 +856,7 @@ bool lp::GreaterThanNode::evaluateBool()
 	}
 	else
 	{
-		warning("Runtime error: incompatible types of parameters for ", "operator Greater than");
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", "operador mayor que");
 	}
 
 	return result;
@@ -894,7 +889,7 @@ bool lp::GreaterOrEqualNode::evaluateBool()
 	}
 	else
 	{
-		warning("Runtime error: incompatible types of parameters for ", "operator Greater or equal than");
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", "operador mayor o igual que");
 	}
 
 	return result;
@@ -928,7 +923,7 @@ bool lp::LessThanNode::evaluateBool()
 	}
 	else
 	{
-		warning("Runtime error: incompatible types of parameters for ", "operator Less than");
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", "operador menor que");
 	}
 
 	return result;
@@ -961,7 +956,7 @@ bool lp::LessOrEqualNode::evaluateBool()
 	}
 	else
 	{
-		warning("Runtime error: incompatible types of parameters for ", "operator Less or equal than");
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", "operador menor o igual que");
 	}
 
 	return result;
@@ -1005,14 +1000,14 @@ bool lp::EqualNode::evaluateBool()
 				result = (leftBoolean == rightBoolean);
 				break;
 		  default:
-				warning("Runtime error: incompatible types of parameters for ", 
-								"Equal operator");				
+				warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", 
+								"operador igual");				
 		}
 	}
 	else
 	{
-		warning("Runtime error: incompatible types of parameters for ", 
-						"Equal operator");
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", 
+						"operador igual");
 	}
 
 	return result;
@@ -1055,13 +1050,13 @@ bool lp::NotEqualNode::evaluateBool()
 				result = (leftBoolean != rightBoolean);
 				break;
 		  default:
-				warning("Runtime error: incompatible types of parameters for ", 
-								"Not Equal operator");				
+				warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", 
+								"operador distinto");				
 		}
 	}
 	else
 	{
-		warning("Runtime error: incompatible types of parameters for ", "Not Equal operator");
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", "operador distinto");
 	}
 
 	return result;
@@ -1096,7 +1091,7 @@ bool lp::AndNode::evaluateBool()
 	}
 	else
 	{
-		warning("Runtime error: incompatible types of parameters for ", "operator And");
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", "operdor #y");
 	}
 
 	return result;
@@ -1131,7 +1126,7 @@ bool lp::OrNode::evaluateBool()
 	}
 	else
 	{
-		warning("Runtime error: incompatible types of parameters for ", "operator Or");
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", "operdor #o");
 	}
 
 	return result;
@@ -1159,7 +1154,7 @@ bool lp::NotNode::evaluateBool()
 	}
 	else
 	{
-		warning("Runtime error: incompatible types of parameters for ", "operator Not");
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles para ", "operador #no");
 	}
 
 	return result;
@@ -1294,7 +1289,7 @@ void lp::AssignmentStmt::evaluate()
 			break;
 
 			default:
-				warning("Runtime error: incompatible type of expression for ", "Assigment");
+				warning("Error en tiempo de ejecucion: tipo de expresion incompatible para ", "Asignacion");
 		}
 
 	}
@@ -1408,7 +1403,7 @@ void lp::AssignmentStmt::evaluate()
 			break;
 
 			default:
-				warning("Runtime error: incompatible type of expression for ", "Assigment");
+				warning("Error en tiempo de ejecucion: tipo de expresion incompatible para ", "Asignacion");
 		}
 	}
 }
@@ -1448,7 +1443,7 @@ void lp::PrintStmt::evaluate()
 			std::cout << this->_exp->evaluateString();
 			break;
 		default:
-			warning("Runtime error: incompatible type for ", "print");
+			warning("Error en tiempo de ejecucion: tipo incompatible para ", "escribir()");
 	}
 }
 
@@ -1702,9 +1697,9 @@ void lp::ForStmt::evaluate()
 
 	if(value > end || inc < 0)
 	{
-		std::cout << RED;
-		std::cout << "ERROR: Valores incorrectos en bucle 'para'\ninicio = " << value << "\nfinal = " << end << "\n";
-		std::cout << RESET;
+		std::ostringstream oss;
+		oss << "Valores incorrectos en bucle 'para' (inicio = " << value << ", final = " << end << ")\n";
+		execerror("Error en tiempo de ejecucion: ", oss.str());
 	}
 
 	for(; n->getValue() <= end; n->setValue(n->getValue()+inc))
