@@ -11,6 +11,7 @@
 #include <string>
 #include <list>
 #include <sstream>
+#include <string.h>
 
 // Para usar la funciones pow y std::abs
 #include <cmath>
@@ -415,6 +416,8 @@ int lp::RelationalOperatorNode::getType()
 	if ( (this->_left->getType() == NUMBER) and (this->_right->getType() == NUMBER))
 		result = BOOL;
 	else if ( (this->_left->getType() == BOOL) and (this->_right->getType() == BOOL))
+		result = BOOL;
+	else if ( (this->_left->getType() == STRING) and (this->_right->getType() == STRING))
 		result = BOOL;
 	else
 		warning("Error en tiempo de ejecucion: tipos incompatibles para ", "operador relacional");
@@ -909,12 +912,17 @@ bool lp::GreaterThanNode::evaluateBool()
 {
 	bool result = false;
 
-	if (this->getType() == BOOL)
+	if (this->getType() == BOOL and this->_left->getType() == STRING and this->_right->getType() == STRING)
+	{
+		const char* left_str = this->_left->evaluateString().c_str();
+		const char* right_str = this->_right->evaluateString().c_str();
+		result = strcmp(left_str, right_str) > 0;
+	} 
+	else if (this->getType() == BOOL)
 	{
 		double leftNumber, rightNumber;
 		leftNumber = this->_left->evaluateNumber();
 		rightNumber = this->_right->evaluateNumber();
-
 		result = (leftNumber > rightNumber);
 	}
 	else
