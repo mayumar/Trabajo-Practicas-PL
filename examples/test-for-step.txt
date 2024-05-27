@@ -10,3 +10,4 @@ Ejemplo de salida: 0, 2, 4, 6, 8, 10
 para i desde 0 hasta 10 paso 2 hacer
     escribir(i);
 fin_para;
+escribir('\n');
