@@ -759,9 +759,9 @@ exp:	NUMBER
  			$$ = new lp::NotNode($2);
 		}
 
-	| cond QUESTION_MARK exp COLON exp
+	| LPAREN cond QUESTION_MARK exp COLON exp RPAREN
 		{ 
-			$$ = new lp::TernaryNode($1, $3, $5);
+			$$ = new lp::TernaryNode($2, $4, $6);
 		}
 ;
 
