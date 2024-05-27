@@ -209,28 +209,28 @@ CAMBIO DE TIPO DINÁMICO	DE LA VARIABLE				[Y]
 
 														CONTROL		FECHA
 -------------------------------------------------------------------------------------
-CONTROL DE ERRORES:										[ ]	
+CONTROL DE ERRORES:										[Y]	
 -------------------------------------------------------------------------------------
-LÉXICOS												[ ]
+LÉXICOS												[Y]
 	IDENTIFICADOR MAL ESCRITO 					[Y]
-	NÚMERO MAL ESCRITO 							[ ]
-	SIMBOLO NO PERMITIDO						[ ]
-	OTROS							        	[ ]
+	NÚMERO MAL ESCRITO 							[Y]
+	SIMBOLO NO PERMITIDO						[Y]
+	OTROS							        	[Y]
 
-SINTÁCTICOS											[ ]
+SINTÁCTICOS											[Y]
 	SENTENCIA DE CONTROL MAL ESCRITA			[Y]
-	SENTENCIA CON ARGUMENTOS INCOMPATIBLES 		[ ]
-	OTROS						    			[ ]
+	SENTENCIA CON ARGUMENTOS INCOMPATIBLES 		[Y]
+	OTROS						    			[Y]
 
-SEMÁNTICOS											[ ]
-	ARGUMENTOS DE FUNCIONES INCOMPATIBLES  		[ ]
-	OPERANDOS DE EXPRESIONES INCOMPATIBLES 		[ ]
+SEMÁNTICOS											[Y]
+	ARGUMENTOS DE FUNCIONES INCOMPATIBLES  		[Y]
+	OPERANDOS DE EXPRESIONES INCOMPATIBLES 		[Y]
 
-DE EJECUCIÓN										[ ]
-	SENTENCIA "PARA" CON BUCLE INFINITO			[ ]
-	FICHERO INEXISTENTE							[ ]
-	FICHERO CON EXTENSIÓN INCORRECTA			[ ]
-	OTROS										[ ]
+DE EJECUCIÓN										[Y]
+	SENTENCIA "PARA" CON BUCLE INFINITO			[Y]
+	FICHERO INEXISTENTE							[Y]
+	FICHERO CON EXTENSIÓN INCORRECTA			[Y]
+	OTROS										[Y]
 
 														CONTROL		FECHA
 -------------------------------------------------------------------------------------

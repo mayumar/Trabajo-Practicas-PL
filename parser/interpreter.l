@@ -179,6 +179,8 @@ CADENA \'([^'\\]|\\.)*\'
 
 ":"		{ return COLON; }
 
+"?"		{ return TERNARY; }
+
 "#y"	{ return AND; }
 "#o"	{ return OR; }
 "#no"	{ return NOT; }
@@ -230,7 +232,7 @@ CADENA \'([^'\\]|\\.)*\'
 								yyless(yyleng-1); 
 
 								/* Display the error message */
-								warning("Lexical error", yytext);
+								warning("Símbolo no reconocido: ", yytext);
 
 								/* Restore the initial state */
    								BEGIN(INITIAL);
