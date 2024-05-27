@@ -1611,6 +1611,68 @@ class NotNode : public LogicalUnaryOperatorNode
   bool evaluateBool();
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   TernaryNode
+  \brief   Definition of atributes and methods of TernaryNode class
+  \note    TernaryNode Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
+class TernaryNode : public ExpNode
+{
+	protected:
+		ExpNode *_cond; //!< Condition of the ternary statement
+  		ExpNode *_true_exp; //!< ExpNode if the ternary is true
+  		ExpNode *_false_exp; //!< ExpNode if the ternary is false
+
+	public:
+	/*!		
+		\brief Constructor of  TernaryNode
+		\param cond: condition expression for the ternary
+		\param true_exp: the expression if the condition is true
+		\param false_exp: the expression if the condition is false
+		\post  A new TernaryNode is created with the parameters
+	*/
+		TernaryNode(ExpNode *cond, ExpNode *true_exp, ExpNode *false_exp)
+		{
+			this->_cond = cond;
+			this->_true_exp = true_exp;
+			this->_false_exp = false_exp;
+		}
+	
+	/*!
+		\brief   Print the AST for TernaryNode
+		\return  void
+		\sa		   evaluate
+	*/
+	void printAST();
+
+	/*!	
+		\brief   Evaluate the TernaryNode for a number
+		\return  double
+		\sa	   	 printAST
+	*/
+	double evaluateNumber();
+
+	/*!	
+		\brief   Evaluate the TernaryNode for a string
+		\return  std::string
+		\sa	   	 printAST
+	*/
+	std::string evaluateString();
+
+	/*!	
+		\brief   Evaluate the TernaryNode for a boolean
+		\return  bool
+		\sa	   	 printAST
+	*/
+	bool evaluateBool();
+
+	int getType();
+
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -2295,6 +2357,53 @@ class SwitchStmt : public Statement
 
 	/*!	
 		\brief   Evaluate the SwitchStmt
+		\return  void
+		\sa	   	 printAST
+	*/
+	void evaluate();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   TernaryStmt
+  \brief   Definition of atributes and methods of TernaryStmt class
+  \note    TernaryStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
+class TernaryStmt : public Statement
+{
+	private:
+		ExpNode *_cond; //!< Condition of the ternary statement
+  		Statement *_true_exp; //!< Statement if the ternary is true
+  		Statement *_false_exp; //!< Statement if the ternary is false
+
+	public:
+	/*!		
+		\brief Constructor of  TernaryStmt
+		\param cond: condition expression for the ternary
+		\param true_exp: the statement if the condition is true
+		\param false_exp: the statement if the condition is false
+		\post  A new TernaryStmt is created with the parameters
+	*/
+		TernaryStmt(ExpNode *cond, Statement *true_exp, Statement *false_exp)
+		{
+			this->_cond = cond;
+			this->_true_exp = true_exp;
+			this->_false_exp = false_exp;
+		}
+	
+	/*!
+		\brief   Print the AST for TernaryStmt
+		\return  void
+		\sa		   evaluate
+	*/
+	void printAST();
+
+	/*!	
+		\brief   Evaluate the TernaryStmt
 		\return  void
 		\sa	   	 printAST
 	*/

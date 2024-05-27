@@ -179,7 +179,7 @@ CADENA \'([^'\\]|\\.)*\'
 
 ":"		{ return COLON; }
 
-"?"		{ return TERNARY; }
+"?"		{ return QUESTION_MARK; }
 
 "#y"	{ return AND; }
 "#o"	{ return OR; }

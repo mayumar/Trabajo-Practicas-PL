@@ -1223,6 +1223,85 @@ bool lp::NotNode::evaluateBool()
 	return result;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void lp::TernaryNode::printAST()
+{
+	std::cout << "TernaryNode: ?" << std::endl;
+	std::cout << "\t";
+	this->_cond->printAST();
+	std::cout << "\t";
+	this->_true_exp->printAST();
+	std::cout << "\t";
+	this->_false_exp->printAST();
+}
+
+double lp::TernaryNode::evaluateNumber() 
+{
+	double result = 0.0;
+
+	if (this->getType() == NUMBER)
+	{
+		result = this->_cond->evaluateBool() ? this->_true_exp->evaluateNumber() : this->_false_exp->evaluateNumber();
+	}
+	else
+	{
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles para ", "operador ternaria");
+	}
+
+	return result;
+}
+
+std::string lp::TernaryNode::evaluateString() 
+{
+	std::string result = "";
+
+	if (this->getType() == STRING)
+	{
+		result = this->_cond->evaluateBool() ? this->_true_exp->evaluateString() : this->_false_exp->evaluateString();
+	}
+	else
+	{
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles para ", "operador ternaria");
+	}
+
+	return result;
+}
+
+bool lp::TernaryNode::evaluateBool() 
+{
+	bool result = false;
+
+	if (this->getType() == BOOL)
+	{
+		result = this->_cond->evaluateBool() ? this->_true_exp->evaluateBool() : this->_false_exp->evaluateBool();
+	}
+	else
+	{
+		warning("Error en tiempo de ejecucion: tipos de parametros incompatibles para ", "operador ternaria");
+	}
+
+	return result;
+}
+
+int lp::TernaryNode::getType()
+{
+	// Determina el tipo de nodo basado en los tipos de _true_exp y _false_exp
+	// Aquí asumimos que _true_exp y _false_exp tienen el mismo tipo
+	int trueType = _true_exp->getType();
+	int falseType = _false_exp->getType();
+	if (trueType == falseType)
+	{
+		return trueType;
+	}
+	else
+	{
+		warning("Error en tiempo de ejecucion: tipos incompatibles en las expresiones para", "operador ternaria");
+		return -1; // Tipo no válido o error
+	}
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

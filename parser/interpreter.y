@@ -158,7 +158,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %token SEMICOLON
 /*******************************************/
 
-%token READ READ_STRING PRINT IF THEN ELSE END_IF WHILE DO END_WHILE REPEAT UNTIL FOR END_FOR FROM STEP SWITCH CASE DEFAULT END_SWITCH
+%token READ READ_STRING PRINT IF THEN ELSE END_IF WHILE DO END_WHILE REPEAT UNTIL FOR END_FOR FROM STEP SWITCH CASE DEFAULT END_SWITCH QUESTION_MARK
 
 %right ASSIGNMENT PLUSASSIGNMENT MINUSASSIGNMENT
 
@@ -757,6 +757,11 @@ exp:	NUMBER
 	 	{
 		  // Create a new "logic negation" node	
  			$$ = new lp::NotNode($2);
+		}
+
+	| cond QUESTION_MARK exp COLON exp
+		{ 
+			$$ = new lp::TernaryNode($1, $3, $5);
 		}
 ;
 
