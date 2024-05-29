@@ -242,23 +242,23 @@ void lp::StringNode::printAST()
 std::string lp::StringNode::evaluateString() 
 { 
 	std::string processedValue;
-	for (size_t i = 0; i < this->_string.length(); ++i)
+	for (size_t i = 0; i < this->_string.length(); i++)
 	{
-		if (this->_string[i] == '\\' && i + 1 < this->_string.length())
+		if (this->_string[i] == '\\')
 		{
 			switch (this->_string[i + 1])
 			{
 				case 'n':
 					processedValue += '\n';
-					++i;
+					i++;
 					break;
 				case '\'':
 					processedValue += '\'';
-					++i;
+					i++;
 					break;
 				case 't':
 					processedValue += '\t';
-					++i;
+					i++;
 					break;
 				default:
 					processedValue += this->_string[i];
