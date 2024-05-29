@@ -950,7 +950,13 @@ bool lp::GreaterOrEqualNode::evaluateBool()
 {
 	bool result = false;
 
-	if (this->getType() == BOOL)
+	if (this->getType() == BOOL and this->_left->getType() == STRING and this->_right->getType() == STRING)
+	{
+		const char* left_str = this->_left->evaluateString().c_str();
+		const char* right_str = this->_right->evaluateString().c_str();
+		result = strcmp(left_str, right_str) >= 0;
+	} 
+	else if (this->getType() == BOOL)
 	{
 		double leftNumber, rightNumber;
 		leftNumber = this->_left->evaluateNumber();
@@ -984,7 +990,13 @@ bool lp::LessThanNode::evaluateBool()
 {
 	bool result = false;
 
-	if (this->getType() == BOOL)
+	if (this->getType() == BOOL and this->_left->getType() == STRING and this->_right->getType() == STRING)
+	{
+		const char* left_str = this->_left->evaluateString().c_str();
+		const char* right_str = this->_right->evaluateString().c_str();
+		result = strcmp(left_str, right_str) < 0;
+	} 
+	else if (this->getType() == BOOL)
 	{
 		double leftNumber, rightNumber;
 		leftNumber = this->_left->evaluateNumber();
@@ -1017,7 +1029,13 @@ bool lp::LessOrEqualNode::evaluateBool()
 {
 	bool result = false;
 
-	if (this->getType() == BOOL)
+	if (this->getType() == BOOL and this->_left->getType() == STRING and this->_right->getType() == STRING)
+	{
+		const char* left_str = this->_left->evaluateString().c_str();
+		const char* right_str = this->_right->evaluateString().c_str();
+		result = strcmp(left_str, right_str) <= 0;
+	} 
+	else if (this->getType() == BOOL)
 	{
 		double leftNumber, rightNumber;
 		leftNumber = this->_left->evaluateNumber();
@@ -1069,8 +1087,11 @@ bool lp::EqualNode::evaluateBool()
 
 				// 
 				result = (leftBoolean == rightBoolean);
+			break;
+			case STRING:
+				result = strcmp(this->_left->evaluateString().c_str(), this->_right->evaluateString().c_str()) == 0;
 				break;
-		  default:
+			default:
 				warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", 
 								"operador igual");				
 		}
@@ -1119,8 +1140,11 @@ bool lp::NotEqualNode::evaluateBool()
 
 				// 
 				result = (leftBoolean != rightBoolean);
-				break;
-		  default:
+			break;
+			case STRING:
+				result = strcmp(this->_left->evaluateString().c_str(), this->_right->evaluateString().c_str()) != 0;
+			break;
+			default:
 				warning("Error en tiempo de ejecucion: tipos de parametros incompatibles ", 
 								"operador distinto");				
 		}

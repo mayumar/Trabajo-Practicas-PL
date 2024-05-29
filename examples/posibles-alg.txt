@@ -1,0 +1,6 @@
+descomposicion de numeros primos
+fibonnacci
+encontrar los n primeros numeros primos
+comprobar si un numero es primo
+
+
