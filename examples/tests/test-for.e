@@ -1,13 +1,9 @@
-!! escribir('Indique el inicio del bucle: ');
-!! leer(init);
+escribir('Indique el inicio del bucle: ');
+leer(init);
 escribir('Indique el final del bucle: ');
-leer(N);
+leer(end);
 
-factorial := 1;
-
-para i desde 2 hasta N paso 1 hacer
-    factorial := factorial * i;
+para i desde init hasta end hacer
+    escribir(i);
+    escribir('\n');
 fin_para;
-
-escribir(factorial);
-escribir('\n');
