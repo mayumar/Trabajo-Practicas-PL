@@ -16,7 +16,7 @@ mientras (n <> 0) hacer
 	fin_si;
 
 	!! Cociente de la división entera
-       n := n // 2;
+	n := n // 2;
 fin_mientras;
 
 escribir('Número en código binario: ' || r || '\n');

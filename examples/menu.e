@@ -1,7 +1,7 @@
 <<
   Asignatura:    Procesadores de Lenguajes
 
-  Titulación:    Ingeniería Informática
+  Titulación:    Ingeniería Inparamática
   Especialidad:  Computación
   Curso:         Tercero
   Cuatrimestre:  Segundo
@@ -15,7 +15,7 @@
   Fichero de ejemplo para interpreter.exe
 >>
 
-@ Bienvenida
+!! Bienvenida
 
 borrar_pantalla;
 lugar(10,10);
