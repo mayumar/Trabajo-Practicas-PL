@@ -22,5 +22,4 @@ para i desde 1 hasta n hacer
     fin_si;
 
     escribir(output || '\n');
-
 fin_para;
