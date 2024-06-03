@@ -1620,7 +1620,6 @@ void lp::PlusAssignmentStmt::evaluate()
 			double value;
 			// evaluate the expression as NUMBER
 			value = this->_exp->evaluateNumber();
-			value += value;
 
 			// Check the type of the first varible
 			if (firstVar->getType() == NUMBER)
@@ -1629,7 +1628,7 @@ void lp::PlusAssignmentStmt::evaluate()
 				lp::NumericVariable *v = (lp::NumericVariable *) table.getSymbol(this->_id);
 
 				// Assignment the value to the identifier in the table of symbols
-				v->setValue(value);
+				v->setValue(value + v->getValue());
 			}
 			// The type of variable is not NUMBER
 			else
@@ -1689,7 +1688,6 @@ void lp::MinusAssignmentStmt::evaluate()
 			double value;
 			// evaluate the expression as NUMBER
 			value = this->_exp->evaluateNumber();
-			value -= value;
 
 			// Check the type of the first varible
 			if (firstVar->getType() == NUMBER)
@@ -1698,7 +1696,7 @@ void lp::MinusAssignmentStmt::evaluate()
 				lp::NumericVariable *v = (lp::NumericVariable *) table.getSymbol(this->_id);
 
 				// Assignment the value to the identifier in the table of symbols
-				v->setValue(value);
+				v->setValue(value - v->getValue());
 			}
 			// The type of variable is not NUMBER
 			else
