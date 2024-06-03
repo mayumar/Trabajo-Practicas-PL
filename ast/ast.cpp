@@ -1628,7 +1628,7 @@ void lp::PlusAssignmentStmt::evaluate()
 				lp::NumericVariable *v = (lp::NumericVariable *) table.getSymbol(this->_id);
 
 				// Assignment the value to the identifier in the table of symbols
-				v->setValue(value + v->getValue());
+				v->setValue(v->getValue() + value);
 			}
 			// The type of variable is not NUMBER
 			else
@@ -1696,7 +1696,7 @@ void lp::MinusAssignmentStmt::evaluate()
 				lp::NumericVariable *v = (lp::NumericVariable *) table.getSymbol(this->_id);
 
 				// Assignment the value to the identifier in the table of symbols
-				v->setValue(value - v->getValue());
+				v->setValue(v->getValue() - value);
 			}
 			// The type of variable is not NUMBER
 			else
