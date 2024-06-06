@@ -1,6 +1,6 @@
 <<
 Este algoritmo iterativo muestra los n primeros 
-numeros de la sucesion de Fibonnacci
+numeros de la sucesion de Fibonacci
 >>
 
 escribir('Escribe el numero limite de la sucesion: ');
