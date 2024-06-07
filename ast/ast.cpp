@@ -1645,7 +1645,7 @@ void lp::PlusAssignmentStmt::evaluate()
 		}
 		else
 		{
-			warning("Runtime error: incompatible type of expression for ", "PlusAssigment");
+			warning("Error en tiempo de ejecucion: tipo de expresion incompatible para ", "Asignacion con suma");
 		}
 	}
 }
@@ -1656,7 +1656,7 @@ void lp::PlusAssignmentStmt::evaluate()
 
 void lp::MinusAssignmentStmt::printAST()
 {
-  std::cout << "plus_assignment_node: -:="  << std::endl;
+  std::cout << "minus_assignment_node: -:="  << std::endl;
   std::cout << "\t";
   std::cout << this->_id << std::endl;
   std::cout << "\t";
@@ -1712,7 +1712,7 @@ void lp::MinusAssignmentStmt::evaluate()
 		}
 		else
 		{
-			warning("Runtime error: incompatible type of expression for ", "PlusAssigment");
+			warning("Error en tiempo de ejecucion: tipo de expresion incompatible para ", "Asignacion con resta");
 		}
 	}
 }
@@ -2157,7 +2157,7 @@ void lp::PlusPlusStmt::evaluate()
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for ","PlusPlus");
+		warning("Error en tiempo de ejecucion: las expresiones no son numericas para ", "incremento");
 	}
 
 }
@@ -2184,7 +2184,7 @@ void lp::MinusMinusStmt::evaluate()
 	}
 	else
 	{
-		warning("Runtime error: the expressions are not numeric for ","PlusPlus");
+		warning("Error en tiempo de ejecucion: las expresiones no son numericas para ", "decremento");
 	}
 
 }
