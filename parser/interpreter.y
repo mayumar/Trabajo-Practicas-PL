@@ -480,7 +480,7 @@ plusasgn: VARIABLE PLUSASSIGNMENT exp
 
 	| CONSTANT PLUSASSIGNMENT exp 
 		{   
- 			execerror("Semantic error in assignment: it is not allowed to modify a constant ", $1);
+ 			execerror("Error semántico en asignación: no está permitido modificar una constante ", $1);
 		}
 ;
 
@@ -492,7 +492,7 @@ minusasgn: VARIABLE MINUSASSIGNMENT exp
 
 	| CONSTANT MINUSASSIGNMENT exp 
 		{   
- 			execerror("Semantic error in assignment: it is not allowed to modify a constant ", $1);
+ 			execerror("Error semántico en asignación: no está permitido modificar una constante ", $1);
 		}
 ;
 
